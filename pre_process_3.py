@@ -31,7 +31,6 @@ def get_binary_image(cell):
 
         print(j)
         
-        
         for i in range (0,img.shape[0]):
             im_new = imread(path_dir_1,key = i)
             images.append(im_new)

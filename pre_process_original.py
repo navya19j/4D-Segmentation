@@ -11,7 +11,7 @@ def get_binary_image():
 
     
  
-    for j in range (118,200):
+    for j in range (0,200):
         if (j!=117) and (j!=164): #117
             path_dir = os.getcwd() + "/Labeled/cell02_EEA1 TagRFP_binary"
             path_fin = os.getcwd() + "/Labeled_Scaled/cell02_EEA1 TagRFP"
@@ -37,11 +37,11 @@ def get_binary_image():
         print(j)
         print(np.shape(images))
         
-        images = np.pad(images,((24,),(0,),(0,)),'wrap')
-        images = np.pad(images,((0,),(0,),(56,)),'wrap')
-        images = np.pad(images,((0,),(16,),(0,)),'wrap')
+        #image.shape = 608,608,608
+        images = np.pad(images,((264,),(0,),(0,)),'wrap')
+        images = np.pad(images,((0,),(0,),(104,)),'wrap')
         print(np.shape(images))
-        imsave(path_fin_1,images)
+        # imsave(path_fin_1,images)
         #im = Image.open(path_fin_1)
         #x = im.resize((256,256),resample =Image.NEAREST)
         #new_im = np.zeros((128,128,128))
