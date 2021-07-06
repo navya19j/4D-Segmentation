@@ -2,7 +2,6 @@ import numpy
 import torch
 import torch.nn as nn
 import torch.nn.functional as TF
-import torchio as tio
 
 
 class Double_Conv(nn.Module):

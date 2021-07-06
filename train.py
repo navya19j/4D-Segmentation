@@ -74,18 +74,18 @@ def main():
 
     if load_model:
         load_checkpoint(torch.load("try.pth.tar"),model)
-        # print("Accuracy on Test: ")
-        # x,y,z = check_accuracy(test_loader,model,device,loss_fn)
-        # dice_test.append(x)
-        # iou_test.append(y)
-        # loss_test.append(z)
-        # print("Accuracy on Train: ")
-        # a,b,c = check_accuracy(train_loader,model,device,loss_fn)
-        # dice_train.append(a)
-        # iou_train.append(b)
-        # loss_train.append(c)
+        print("Accuracy on Test: ")
+        x,y,z = check_accuracy(test_loader,model,device,loss_fn)
+        dice_test.append(x)
+        iou_test.append(y)
+        loss_test.append(z)
+        print("Accuracy on Train: ")
+        a,b,c = check_accuracy(train_loader,model,device,loss_fn)
+        dice_train.append(a)
+        iou_train.append(b)
+        loss_train.append(c)
             
-        # save_prediction (test_loader,model,path,device) 
+        save_prediction (test_loader,model,path,device) 
 
     for epoch in range (num_epochs):
 
