@@ -19,4 +19,17 @@ utils.py - utility functions.
 test_x.py - when using cropped images, this file takes an input image, crops it, passes the cropped input to the model and aligns the output sequentially to produce the resized output.
 
 
+_Example Images_:
+
+Data - Original Input Images with dimensions (80,608,400).
+
+Labeled - Original Input Image Segmented Masks with dimensions (80,608,400).
+
+Data_vol - Cropped patches of Input Images. 
+
+Labeled_vol -  Cropped patches of Input Image Segmented Masks. 
+
+Data_Resized - Original Input Images resized to (128,128,128).
+
+Labeled_Resized - Original Input Image Segmented Masks resized to (128,128,128).
 
