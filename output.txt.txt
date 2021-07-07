@@ -1,0 +1,37 @@
+Saving Checkpoint
+Saved
+Epoch-1
+Accuracy on Test:
+Length of Loader:
+39
+Intersection over Union:
+0.30615237317024135
+Dice Score:
+0.46333725903278744
+Loss:
+0.42301224668820697
+Accuracy on Train:
+Length of Loader:
+156
+Intersection over Union:
+0.3114455638147078
+Dice Score:
+0.46752941221571886
+Loss:
+0.41869835765698016
+Test Trends:
+Dice:
+[0.30615237317024135]
+IOU:
+[0.46333725903278744]
+Loss:
+[0.42301224668820697]
+Train Trends:
+Dice:
+[0.3114455638147078]
+IOU:
+[0.46752941221571886]
+Loss:
+[0.41869835765698016]
+
+Epoch 2:

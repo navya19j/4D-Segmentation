@@ -55,13 +55,13 @@ def main():
     model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
     learning_rate = 1e-4
-    optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
+    optimize = optim.Adam(model.parameters(), lr = learning_rate)
     path = os.getcwd()
     train_loader = get_loaders(path)[0]
     test_loader = get_loaders(path)[1]
 
     num_classes = 2
-    num_epochs = 15
+    num_epochs = 20
     load_model = False
     scaler = torch.cuda.amp.GradScaler()
     dice_test = []
@@ -73,19 +73,7 @@ def main():
     loss_train = []
 
     if load_model:
-        load_checkpoint(torch.load("try.pth.tar"),model)
-        print("Accuracy on Test: ")
-        x,y,z = check_accuracy(test_loader,model,device,loss_fn)
-        dice_test.append(x)
-        iou_test.append(y)
-        loss_test.append(z)
-        print("Accuracy on Train: ")
-        a,b,c = check_accuracy(train_loader,model,device,loss_fn)
-        dice_train.append(a)
-        iou_train.append(b)
-        loss_train.append(c)
-            
-        save_prediction (test_loader,model,path,device) 
+        load_checkpoint(torch.load("checkpoint.pth.tar"),model)
 
     for epoch in range (num_epochs):
 
@@ -93,6 +81,7 @@ def main():
         try:
             checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
             save_checkpoint(checkpoint)
+            print("Saved")
         except:
             print("Error")
         finally:
@@ -107,18 +96,41 @@ def main():
             dice_train.append(a)
             iou_train.append(b)
             loss_train.append(c)
+        
+            print("Test Trends: ")
+            print("Dice: ")
+            print(dice_test)
+            print("IOU: ")
+            print(iou_test)
+            print("Loss: ")
+            print(loss_test)
 
-            
-    save_prediction (test_loader,model,path,device) 
+            print("Train Trends: ")
+            print("Dice: ")
+            print(dice_train)
+            print("IOU: ")
+            print(iou_train)
+            print("Loss: ")
+            print(loss_train)
+
+        # save_prediction (test_loader,model,path,device)
+
+    # save_prediction (test_loader,model,path,device) 
     print("Test Trends: ")
-    print("Dice: " + dice_test)
-    print("IOU: " + iou_test)
-    print("Loss: " + loss_test)
+    print("Dice: ")
+    print(dice_test)
+    print("IOU: ")
+    print(iou_test)
+    print("Loss: ")
+    print(loss_test)
 
     print("Train Trends: ")
-    print("Dice: " + dice_train)
-    print("IOU: " + iou_train)
-    print("Loss: " + loss_train)
+    print("Dice: ")
+    print(dice_train)
+    print("IOU: ")
+    print(iou_train)
+    print("Loss: ")
+    print(loss_train)
 
     print("Saving")
     save_prediction (test_loader,model,path,device) 

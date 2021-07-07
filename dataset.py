@@ -49,15 +49,15 @@ class EndosomeDataset(torch.utils.data.Dataset):
         #print(mask_path)
         for i in range (0,128):
             im_new = imread(mask_path,key=i)
-            mask_array[:,i,:,:] = np.array(im_new, dtype=np.float32)
+            mask_array[0,i,:,:] = np.array(im_new, dtype=np.float32)
         mask_array = mask_array//float(255)
 
         for i in range (0,128):
             m_new = imread(img_path,key=i)
             #print(im_new)
-            img_array[:,i,:,:] = np.array(m_new, dtype=np.float32)
+            img_array[0,i,:,:] = np.array(m_new, dtype=np.float32)
         k = np.amax(img_array)
-        img_array = img_array*255/float(k)
+        img_array = img_array/float(k)
 
         ##print(img_array)
         #print(mask_array)

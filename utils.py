@@ -12,7 +12,7 @@ import sys
 from tifffile import imsave
 import torchvision.transforms as TF_v
 torch.set_printoptions(profile="full")
-import torchio as tio
+# import torchio as tio
 
 def get_loaders(path):
     
@@ -20,10 +20,10 @@ def get_loaders(path):
     torch.manual_seed(5)
 
     indices = torch.randperm(len(dataset_all)).tolist()
-    # if (117 in indices):
-    #     indices.remove(117)
-    # if (66 in indices):
-    #     indices.remove(66)
+    if (117 in indices):
+        indices.remove(117)
+    if (66 in indices):
+        indices.remove(66)
     length = len(indices)
     idx = int(-0.2*length)
 
@@ -40,7 +40,7 @@ def get_loaders(path):
     return data_loader_train,data_loader_test
 
 #SAVE_CHECKPOINT
-def save_checkpoint(state, filename = "try.pth.tar"):
+def save_checkpoint(state, filename = "checkpoint.pth.tar"):
     print("Saving Checkpoint")
     torch.save(state,filename)
 
@@ -114,7 +114,7 @@ def save_prediction (loader,model,path,device):
         imsave(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",x.detach().cpu().numpy())
         imsave(path + "/actual_mask/" + str(batch_idx) +str(i) + ".tif",y.detach().cpu().numpy())
 
-        # change_dims(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",path + "/actual_mask/"+ str(batch_idx) +str(i) + ".tif")
+        change_dims(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",path + "/actual_mask/"+ str(batch_idx) +str(i) + ".tif")
 
     model.train()
 
