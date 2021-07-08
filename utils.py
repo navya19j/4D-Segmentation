@@ -55,7 +55,7 @@ def iou(outputs,labels):
     intersection = torch.sum(torch.logical_and(outputs,labels),dim=(0,1,2,3,4))
     union = torch.sum(torch.logical_or(outputs,labels),dim=(0,1,2,3,4))
     iou = (intersection + sanity)/(union + sanity)
-    return (torch.mean(iou,dim=[0]))
+    return (iou)
 
 
 def check_accuracy(loader,model,device,loss_func):
@@ -69,11 +69,10 @@ def check_accuracy(loader,model,device,loss_func):
             i+=1
             x = x.float().to(device)
             y = y.float().to(device)
-            x = model(x)
-
+            pred = model(x)
             loss = loss_func(x,y).item()
             loss_f += loss
-            pred = torch.sigmoid(x)
+            pred = torch.sigmoid(pred)
             pred = (pred > 0.5).float().detach()
             iou_net += iou(pred,y).item()
             dice_c =  ((2*torch.sum(pred*y))/(torch.sum(pred+y) + 1e-7))

@@ -55,7 +55,7 @@ def main():
     model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
     learning_rate = 1e-4
-    optimize = optim.Adam(model.parameters(), lr = learning_rate)
+    optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
     path = os.getcwd()
     train_loader = get_loaders(path)[0]
     test_loader = get_loaders(path)[1]
@@ -97,21 +97,21 @@ def main():
             iou_train.append(b)
             loss_train.append(c)
         
-            print("Test Trends: ")
-            print("Dice: ")
-            print(dice_test)
-            print("IOU: ")
-            print(iou_test)
-            print("Loss: ")
-            print(loss_test)
+            # print("Test Trends: ")
+            # print("Dice: ")
+            # print(dice_test)
+            # print("IOU: ")
+            # print(iou_test)
+            # print("Loss: ")
+            # print(loss_test)
 
-            print("Train Trends: ")
-            print("Dice: ")
-            print(dice_train)
-            print("IOU: ")
-            print(iou_train)
-            print("Loss: ")
-            print(loss_train)
+            # print("Train Trends: ")
+            # print("Dice: ")
+            # print(dice_train)
+            # print("IOU: ")
+            # print(iou_train)
+            # print("Loss: ")
+            # print(loss_train)
 
         # save_prediction (test_loader,model,path,device)
 
