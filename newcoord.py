@@ -16,7 +16,7 @@ file = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled
 contents = file.read()
 dictionary = ast.literal_eval(contents)
 
-file = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_bb.txt","r")
+file = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_bb1.txt","r")
 contents = file.read()
 bbox = ast.literal_eval(contents)
 
@@ -39,7 +39,7 @@ imgbox = conv_dict_to_class(dictionary)
 bbox = conv_dict_to_class(bbox)
 
 img = "cell02_EEA1 TagRFP_T002.tif"
-imgs = "cell02_EEA1 TagRFP_T002f.tif"
+imgs = "cell02_EEA1 TagRFP_T002f1.tif"
 finalbbox = {}
 isvisited = {}
 final_arr = []

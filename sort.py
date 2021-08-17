@@ -13,29 +13,37 @@ dictionary = ast.literal_eval(contents)
 file.close()
 # print(dictionary)
 
-def assign_detection_to_tracker(tracker,detection,iou_threshold,final):
+def assign_detection_to_tracker(trackers,detections,iou_threshold,final):
     
-    for i in range (0,len(tracker)):
-        visit = 1
-        for j in range (0,len(detection)):
-            tracked = tracker[i]
-            detected = detection[j]
+    iou_matrix = np.zeros((len(detections),len(trackers)))
 
-            if (IOU(tracked,detected)>=iou_threshold):
-                visit = 0
-                if tracked.area() >= detected.area():
-                    detection[j] = tracked
-                    final.append(tracked)
-                
-                else:
-                    try :
-                        x = final.index(detected)
-                    except:
-                        final.append(detected)
-        
-        if (visit==1):
-            detection.append(tracker[i])
-            # final.append(tracker[i])
+    for d,det in enumerate(detections):
+        for t,trk in enumerate(trackers):
+            iou_matrix[d,t] = IOU(det,trk)
+
+    matched_indices = linear_assignment(-iou_matrix)
+    # print(matched_indices)
+
+    for d,det in enumerate(detections):
+        if d not in matched_indices[0][:]:
+            final.append(detections[d])
+
+    for t,trk in enumerate(trackers):
+        if t not in matched_indices[1][:]:
+            final.append(trackers[t])
+
+    for i in range (0, len(matched_indices[0])):
+        tracked = trackers[matched_indices[1][i]]
+        detected = detections[matched_indices[0][i]]
+        if iou_matrix[matched_indices[0][i],matched_indices[1]][i] >= iou_threshold:
+            if (tracked.area()>detected.area()):
+                final.append(tracked)
+
+            else:
+                final.append(detected)
+        else:
+            final.append(detected)
+            final.append(tracked)
 
     return final
             
@@ -58,36 +66,17 @@ temp = conv_dict_to_class(dictionary)
 
 start = list(temp.keys())[0]
 tracked = temp[start]
-detected = temp[start]
-fin = []
+n = 0
+
 for i in temp:
-    assign_detection_to_tracker(temp[i],detected,0.2,fin)
+    n+=1
+    tracked = assign_detection_to_tracker(tracked,temp[i],0.2,[])
 
-final = []
-for i in temp:
-    assign_detection_to_tracker(temp[i],detected,0.2,final)
-
-# print(detected)
-
-# sample = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_finalcoord.txt","w")
-# for i in detected:
-#     print(i.x,file=sample)
-#     print(i.y,file=sample)
-#     print(i.w,file=sample)
-#     print(i.h,file=sample)
-#     print(" ",file=sample)
-
-# sample = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_finalcoord2.txt","w")
-# for i in final:
-#     print(i.x,file=sample)
-#     print(i.y,file=sample)
-#     print(i.w,file=sample)
-#     print(i.h,file=sample)
-#     print(" ",file=sample)
+# print(tracked)
 
 output = {0:[]}
 
-for i in detected:
+for i in tracked:
     f = []
     f.append(i.x)
     f.append(i.y)
@@ -96,7 +85,6 @@ for i in detected:
 
     output[0].append(f)
 
-sample = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_bb.txt","w")
-
+sample = open("C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/Labeled/cell02_EEA1 TagRFP contours/cell02_EEA1 TagRFP_T002_bb1.txt","w")
 print(output,file=sample)
 print("Done")
