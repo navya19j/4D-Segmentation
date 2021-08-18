@@ -1,0 +1,2 @@
+Actual.tif filter=lfs diff=lfs merge=lfs -text
+Prediction.tif filter=lfs diff=lfs merge=lfs -text
