@@ -1,0 +1,302 @@
+[16, 158, 81, 15, 184, 150, 114, 152, 167, 163, 89, 149, 20, 55, 60, 136, 107, 133, 126, 53, 175, 51, 11, 99, 153, 171, 26, 104, 14, 86, 50, 92, 196, 144, 43, 193, 37, 47, 64]
+[16, 158, 81, 15, 184, 150, 114, 152, 167, 163, 89, 149, 20, 55, 60, 136, 107, 133, 126, 53, 175, 51, 11, 99, 153, 171, 26, 104, 14, 86, 50, 92, 196, 144, 43, 193, 37, 47, 64]
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.33023574031316316
+Dice Score: 
+0.48884345132571
+Loss: 
+0.3460460924185239
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.33406565828911283
+Dice Score: 
+0.48916661543532824
+Loss: 
+0.3481401226077324
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+2.914918960586274e-11
+Dice Score: 
+0.0
+Loss: 
+0.005794902953008811
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+7.501157857919613e-11
+Dice Score: 
+0.0
+Loss: 
+0.005827127891209854
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.39313708054713714
+Dice Score: 
+0.5614163951996045
+Loss: 
+0.003154699099608339
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.39430128872160963
+Dice Score: 
+0.5591820081075033
+Loss: 
+0.003165880927554099
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.5328950369969393
+Dice Score: 
+0.6938351667844332
+Loss: 
+0.0024303062580143795
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.5286160236701303
+Dice Score: 
+0.6875318814164553
+Loss: 
+0.002437275965442099
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6027634801008762
+Dice Score: 
+0.7513608122483278
+Loss: 
+0.001980274614209357
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.5980982159933027
+Dice Score: 
+0.7452477449670625
+Loss: 
+0.0019723147033334663
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6237936111596915
+Dice Score: 
+0.7672860958637335
+Loss: 
+0.0017818537188502841
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6222735305871958
+Dice Score: 
+0.7636437891707875
+Loss: 
+0.0017647109425758035
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6200982156472329
+Dice Score: 
+0.7632328317715571
+Loss: 
+0.0017917697580579
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6237304199260111
+Dice Score: 
+0.7635937254780378
+Loss: 
+0.001759156630261061
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6883563720262967
+Dice Score: 
+0.8148505809979562
+Loss: 
+0.0016009010738717057
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6856409585646664
+Dice Score: 
+0.8104465336998542
+Loss: 
+0.0015956277325480746
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6943401801280487
+Dice Score: 
+0.8191006076641572
+Loss: 
+0.0016057990067519057
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6876399035278994
+Dice Score: 
+0.8117686078095665
+Loss: 
+0.0016144420294903028
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.706833805793371
+Dice Score: 
+0.8277618946173252
+Loss: 
+0.0014974119750639568
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.7018627817936552
+Dice Score: 
+0.8217194501089696
+Loss: 
+0.0015044066560968088
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.7112492491037418
+Dice Score: 
+0.8307197552460891
+Loss: 
+0.0014555502148607795
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.7069460980904599
+Dice Score: 
+0.825080766244075
+Loss: 
+0.0014612221253068687
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6930879216927749
+Dice Score: 
+0.8171059886614481
+Loss: 
+0.0014292275718150612
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6934486646563388
+Dice Score: 
+0.8147182921962574
+Loss: 
+0.0014138676547773709
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.6705567653362567
+Dice Score: 
+0.8014607215539004
+Loss: 
+0.0015127973822064889
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.6697312042203684
+Dice Score: 
+0.798187562977919
+Loss: 
+0.0014863445629509022
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.7134967553309906
+Dice Score: 
+0.831977523290194
+Loss: 
+0.0013096730093447827
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.7117858793502913
+Dice Score: 
+0.8280334146753049
+Loss: 
+0.0012979936664356873
+Saving Checkpoint
+Saved
+Accuracy on Test: 
+Length of Loader: 
+39
+Intersection over Union: 
+0.7128662329453689
+Dice Score: 
+0.8316175891802862
+Loss: 
+0.00132724947672194
+Accuracy on Train: 
+Length of Loader: 
+156
+Intersection over Union: 
+0.7103442606868413
+Dice Score: 
+0.8271894117829223
+Loss: 
+0.0013179734385817144
