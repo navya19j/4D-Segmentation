@@ -28,7 +28,9 @@ sort.py - finding box of maximum overlap i.e. finding a 3D bounding box for endo
 
 newcoord.py - getting the 3D box coordinates for all 3D bounding boxes
 
-dsort.py - tracking endosomes using linear assignment
+tracker.py - contains the class for tracker algorithm
+
+track.py - tracking endosomes using linear assignment
 
 _Example Images_:
 
@@ -45,6 +47,10 @@ Data_Resized - Original Input Images resized to (128,128,128).
 Labeled_Resized - Original Input Image Segmented Masks resized to (128,128,128).
 
 Track - 
+
+track.txt - contains the map from object identifiers to the time frames containing the box
+
+object.txt - contains the map from object identifiers to the coordinates of the bounding box of that object with time frame.
 
 _3Dboxes.txt - 3D coordinates (output of newcoord.py)
 

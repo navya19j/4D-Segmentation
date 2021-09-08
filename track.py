@@ -45,7 +45,7 @@ def draw_box(img0,current,color,object_id,iter):
         res = new_im_n.copy()
         res = cv2.cvtColor(res,cv2.COLOR_GRAY2RGB)
         cv2.rectangle(res,(x,y),(x+w,y+h),color,1)
-        cv2.putText(res, "(" + str(iter)+ "," +str(object_id)+ ")", (x , y), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2)
+        cv2.putText(res, "(" + str(iter)+ "," +str(object_id)+ ")", (x , y), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
         cv2.imshow("output",res)
         cv2.waitKey(0)
 
@@ -102,7 +102,11 @@ def run():
 
             if object_map.get(object_id) is None:
 
-                object_map[object_id] = conv_box_to_list(box)
+                object_map[object_id] = [(iter,conv_box_to_list(box))]
+
+            else:
+
+                object_map[object_id].append(iter,conv_box_to_list(box))
 
             if track_map.get(object_id) is not None:
                 track_map[object_id].append(iter)
