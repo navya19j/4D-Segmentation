@@ -33,8 +33,8 @@ def run():
         contents = file.read()
         bbox = ast.literal_eval(contents)
 
-        path = "C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/" + "Labeled/cell02_EEA1 TagRFP_binary"
-        path_final = "C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/" + "Labeled/cell02_EEA1 TagRFP contours/temp"
+        path = os.getcwd() + "Labeled/cell02_EEA1 TagRFP_binary"
+        path_final = os.getcwd() + "Labeled/cell02_EEA1 TagRFP contours/temp"
 
         imgbox = conv_dict_to_class(dictionary)
         bbox = conv_dict_to_class(bbox)

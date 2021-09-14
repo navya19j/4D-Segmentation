@@ -4,9 +4,7 @@ import torch
 import torch.utils.data
 from PIL import Image
 from tifffile import imsave
-
 from tifffile import *
-
 from numpy import fabs
 import torch
 import torch.nn as nn
@@ -19,8 +17,6 @@ import torch.optim as optimizer
 from unet import *
 from dataset import *
 from utils import *
-import torchio as tio
-
 
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     #print(device)

@@ -12,6 +12,7 @@ import sys
 from tifffile import imsave
 import torchvision.transforms as TF_v
 torch.set_printoptions(profile="full")
+from dataset_test import *
 # import torchio as tio
 
 def get_loaders(path):
@@ -30,6 +31,7 @@ def get_loaders(path):
     dataset_train = torch.utils.data.Subset(dataset_all, indices[:idx])
 
     dataset_test = torch.utils.data.Subset(dataset_all, indices[idx:])
+    print(indices[idx:])
 
     data_loader_train = torch.utils.data.DataLoader(
         dataset_train, batch_size=1, num_workers=0, shuffle=True,pin_memory=True)
@@ -39,8 +41,17 @@ def get_loaders(path):
 
     return data_loader_train,data_loader_test
 
+def get_loaders_test(path,data,cellname):
+    
+    dataset_all = Dataset_Test(path,data,cellname)
+
+    data_loader_test = torch.utils.data.DataLoader(
+        dataset_all, batch_size=1,num_workers=0, shuffle=False,pin_memory=True)
+
+    return data_loader_test
+
 #SAVE_CHECKPOINT
-def save_checkpoint(state, filename = "checkpoint.pth.tar"):
+def save_checkpoint(state, filename = "checkpoint_1.pth.tar"):
     print("Saving Checkpoint")
     torch.save(state,filename)
 
@@ -70,7 +81,7 @@ def check_accuracy(loader,model,device,loss_func):
             x = x.float().to(device)
             y = y.float().to(device)
             pred = model(x)
-            loss = loss_func(x,y).item()
+            loss = loss_func(pred,y).item()
             loss_f += loss
             pred = torch.sigmoid(pred)
             pred = (pred > 0.5).float().detach()
@@ -116,6 +127,51 @@ def save_prediction (loader,model,path,device):
         change_dims(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",path + "/actual_mask/"+ str(batch_idx) +str(i) + ".tif")
 
     model.train()
+
+
+def save_prediction_test (loader,model,path,device):
+
+    model.eval()
+    i = 0
+    for batch_idx, x in enumerate(loader):
+        i+=1
+        x = x.float().to(device)
+        n_c = x.shape[2]
+
+        with torch.no_grad():
+            x = torch.sigmoid(model(x)).detach()
+        
+        x = x.squeeze(0)
+        x = x.squeeze(0)
+        x = (x>0.5).float()
+        x = x*255.0
+
+        # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
+        change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x)
+        del x
+
+    model.train()
+
+def change_dims_one(path1,img):
+
+        mask_predicted = img.cpu().detach().numpy()
+        d = 80
+        h_mask,w_mask = 400,608
+        mask_array = np.zeros([d,w_mask,h_mask])
+
+        for i in range (0,80):
+            temp = mask_predicted[i]
+            x = cv2.resize(temp, (608, 608),interpolation = cv2.INTER_CUBIC)
+            # x = mask_predicted.resize((608,608),resample =Image.NEAREST)
+            x_im = np.array(x)[:,103:503]
+            mask_array[i,:,:] = x_im
+        
+        # mask_array = np.where(mask_array > 0, 1, 0)
+        # mask_array = mask_array*255
+
+        imsave(path1,mask_array)
+        del mask_array 
+        print("done")  
 
 def change_dims(path1,path2):
 

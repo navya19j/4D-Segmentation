@@ -6,10 +6,9 @@ import os,sys
 from tifffile import *
 from PIL import Image,ImageDraw
 
-
 def create_bound_box():
-    path = "C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/" + "Labeled/cell02_EEA1 TagRFP_binary"
-    path_final = "C:/Users/navya/Desktop/Stuff/IIT/4D segmentation/Data_Navya/" + "Labeled/cell02_EEA1 TagRFP contours"
+    path = os.getcwd() + "Labeled/cell02_EEA1 TagRFP_binary"
+    path_final = os.getcwd() + "Labeled/cell02_EEA1 TagRFP contours"
     all_ims = list(sorted(os.listdir(path)))
     for img in all_ims:
     

@@ -11,7 +11,6 @@ import torch.optim as optimizer
 from unet import *
 from dataset import *
 from utils import *
-import torchio as tio
 
 
 #try deleting loss after each epoch taking it out of loop and summing
@@ -115,7 +114,7 @@ def main():
 
         # save_prediction (test_loader,model,path,device)
 
-    # save_prediction (test_loader,model,path,device) 
+    save_prediction (test_loader,model,path,device) 
     print("Test Trends: ")
     print("Dice: ")
     print(dice_test)
