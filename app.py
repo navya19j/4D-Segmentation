@@ -121,6 +121,98 @@ plot_cols[0].plotly_chart(fig_xyz)
 plot_cols[1].plotly_chart(fig_xyt)
 
 ############################################################################################################
+# Distance Travelled
+
+st.markdown("---")
+st.header("Distance Travelled")
+
+# filter_id = st.selectbox("Select an ID: ", df_filter["track_id"].unique())
+
+df_distance = pd.DataFrame()
+
+for filter_id in df_filter["track_id"].unique():
+
+    # filter for specific id
+    df_filter_distance = df_filter[df_filter["track_id"]==filter_id].sort_values(by="t", ascending=True)
+
+    # difference in cartesian coordinates
+    df_filter_distance["x_diff"] = df_filter_distance['x'].diff()
+    df_filter_distance["y_diff"] = df_filter_distance['y'].diff()
+    df_filter_distance["z_diff"] = df_filter_distance['z'].diff()
+    df_filter_distance = df_filter_distance.fillna(0)
+
+    # euclidean distance
+    df_filter_distance["dist"] = np.sqrt(
+        np.power(df_filter_distance["x_diff"], 2) +
+        np.power(df_filter_distance["y_diff"], 2) + 
+        np.power(df_filter_distance["z_diff"], 2)
+    )
+
+    # cumulative distance
+    df_filter_distance["cumulative_dist"] = df_filter_distance["dist"].cumsum(axis=0)   
+    
+    # append to full dataframe
+    df_distance = df_distance.append(df_filter_distance)
+
+
+st.dataframe(df_distance)
+
+# plot distance data
+fig_dist = px.line(df_distance, x="t", y="dist", color="track_id", title="Euclidean Distance")
+fig_cumulative_dist = px.line(df_distance, x="t", y="cumulative_dist", color="track_id", title="Cumulative Euclidean Distance")
+
+dist_cols = st.columns(2)
+dist_cols[0].plotly_chart(fig_dist, use_container_width=True)
+dist_cols[1].plotly_chart(fig_cumulative_dist, use_container_width=True)
+
+# TODO: dual axis plots for dist and cumdist
+# https://stackoverflow.com/questions/62853539/plotly-how-to-plot-on-secondary-y-axis-with-plotly-express
+
+# need to do it per id
+# https://stackoverflow.com/questions/13114512/calculating-difference-between-two-rows-in-python-pandas
+# https://stackoverflow.com/questions/1401712/how-can-the-euclidean-distance-be-calculated-with-numpy
+# https://en.wikipedia.org/wiki/Euclidean_distance
+# easier to do it manually with the diff between rows..
+
+############################################################################################################
+##### Volumetric Data
+
+st.markdown("---")
+st.header("Volumetric Daa")
+
+# calculate volumetric data
+df_distance["size"] = df_distance["w"] * df_distance["h"] * df_distance["d"]
+df_distance['avg_size'] = df_distance.groupby("track_id")["size"].transform('mean')
+df_distance["dist_per_avg_size"] = df_distance["dist"] / df_distance["avg_size"]
+df_distance["dist_per_size"] = df_distance["dist"] / df_distance["size"]
+df_distance["cumulative_dist_per_size"] = df_distance["cumulative_dist"] / df_distance["size"]
+df_distance["cumulative_dist_per_avg_size"] = df_distance["cumulative_dist"] / df_distance["avg_size"]
+st.write(df_distance)
+
+# volumetric distribution
+fig_hist = px.histogram(df_distance, x="size", color="track_id", nbins=50, title="Size Distribution")
+st.plotly_chart(fig_hist, use_container_width=True)
+
+# plot volumetric distance data
+fig_dist_size = px.line(df_distance, x="t", y="dist_per_size", color="track_id", title="Distance per Size")
+fig_dist_avg_size = px.line(df_distance, x="t", y="dist_per_avg_size", color="track_id", title="Distance per Average Size")
+fig_cumulative_dist_per_size = px.line(df_distance, x="t", y="cumulative_dist_per_size", color="track_id", title="Cumulative Distance per Size")
+fig_cumulative_dist_per_avg_size = px.line(df_distance, x="t", y="cumulative_dist_per_avg_size", color="track_id", title="Cumulative Distance per Avg Size")
+
+dist_cols = st.columns(2)
+dist_cols[0].plotly_chart(fig_dist_size, use_container_width=True)
+dist_cols[1].plotly_chart(fig_cumulative_dist_per_size, use_container_width=True)
+dist_cols[0].plotly_chart(fig_dist_avg_size, use_container_width=True)
+dist_cols[1].plotly_chart(fig_cumulative_dist_per_avg_size, use_container_width=True)
+
+
+
+# save to csv
+df_distance.to_csv("data.csv")
+
+
+
+############################################################################################################
 ##### 2D IMAGE PLOTS
 
 # TODO: 2D plotting visualisation for bounding boxes
@@ -179,7 +271,7 @@ img_bbox = draw_bounding_boxes(df_filter, base_img, idx)
 animate_button = st.button("Animate Image")
 progress_bar = st.empty()
 
-animation_header = st.markdown("**Hello**")
+animation_header = st.markdown(f"**Slice {idx}/{base_img.shape[2]}**")
 img_cols  = st.columns(2)
 df_placeholder = img_cols[0].dataframe(df_filter[df_filter["z"]==idx])
 bbox_placeholder = img_cols[1].image(img_bbox, clamp=True, caption="Tracked Objects", width=500)
