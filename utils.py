@@ -56,9 +56,12 @@ def save_checkpoint(state, filename = "checkpoint_1.pth.tar"):
     torch.save(state,filename)
 
 #LOAD_CHECKPOINT
-def load_checkpoint(checkpoint,model):
+def load_checkpoint(checkpoint,model,optimize):
     print("Loading Checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
+    optimize.load_state_dict(checkpoint["optimizer"])
+    model.eval()
+    # 
 
 #CHECK ACCURACY
 def iou(outputs,labels):

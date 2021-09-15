@@ -61,7 +61,7 @@ def main():
 
     num_classes = 2
     num_epochs = 20
-    load_model = False
+    load_model = True
     scaler = torch.cuda.amp.GradScaler()
     dice_test = []
     iou_test = []
@@ -72,7 +72,7 @@ def main():
     loss_train = []
 
     if load_model:
-        load_checkpoint(torch.load("checkpoint.pth.tar"),model)
+        load_checkpoint(torch.load("checkpoint_1.pth.tar"),model,optimize)
 
     for epoch in range (num_epochs):
 
@@ -95,24 +95,6 @@ def main():
             dice_train.append(a)
             iou_train.append(b)
             loss_train.append(c)
-        
-            # print("Test Trends: ")
-            # print("Dice: ")
-            # print(dice_test)
-            # print("IOU: ")
-            # print(iou_test)
-            # print("Loss: ")
-            # print(loss_test)
-
-            # print("Train Trends: ")
-            # print("Dice: ")
-            # print(dice_train)
-            # print("IOU: ")
-            # print(iou_train)
-            # print("Loss: ")
-            # print(loss_train)
-
-        # save_prediction (test_loader,model,path,device)
 
     save_prediction (test_loader,model,path,device) 
     print("Test Trends: ")
