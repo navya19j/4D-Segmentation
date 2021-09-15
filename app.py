@@ -98,23 +98,27 @@ min_track_ids = list(
 )
 
 df_filter = df[df["track_id"].isin(min_track_ids)]
+df_filter["size"] = df_filter["w"] * df_filter["h"] * df_filter["d"]
+
+uniq_ids = df_filter["track_id"].unique()
 
 st.sidebar.subheader("Statistics")
 st.sidebar.write(
-    f"Filtered to {len(df_track_minimum_length)} individual tracks ({len(df_filter)} data points)."
+    f"Filtered to {len(uniq_ids)} individual tracks ({len(df_filter)} data points)."
 )
 
 #### PLOTTING
+st.markdown("---")
 st.header("Plots")
 # need to flip some axes due to being in img coordinates
 fig_xyz = px.scatter_3d(
-    df_filter, x="z", y="x", z="y", color="track_id", title="XYZ Coordinates"
+    df_filter, x="z", y="x", z="y", color="track_id", title="XYZ Coordinates" #, size=size
 )
 
 
 fig_xyt = px.scatter_3d(
-    df_filter, x="t", y="x", z="y", color="track_id", title="XYT Coordinates"
-)
+    df_filter, x="t", y="x", z="y", color="track_id",  title="XYT Coordinates" #, size=size
+) 
 
 plot_cols = st.columns(2)
 plot_cols[0].plotly_chart(fig_xyz)
