@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import glob
 import ast
 import cv2
+import sys
 from helper3D import *
 from tifffile import *
 from tracker import *
@@ -55,24 +56,25 @@ def conv_box_to_list(box1):
 
 def get_img_path(idx,path):
 
-    if (int(idx/10)==0):
-            idx_new = "00" + str(idx)
-    elif (int(idx/100) == 0):
-        idx_new = "0" + str(idx)
-    else:
-        idx_new =  str(idx)
+    # if (int(idx/10)==0):
+    #         idx_new = "00" + str(idx)
+    # elif (int(idx/100) == 0):
+    #     idx_new = "0" + str(idx)
+    # else:
+    #     idx_new =  str(idx)
 
-    img_id = path + "/" + "cell02_EEA1 TagRFP_T" + idx_new + ".tif"
+    img_id = os.path.join(path,idx)
 
     return img_id
 
     
-def run():
+def run(predicitons):
 
-    start_directory_1 = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/3Dbox")
+    start_directory_1 = os.path.join(os.getcwd(),predicitons,"3D_Box")
     all_box = []
 
     tracker = Tracker()
+    img_name = []
     
     for files in list(os.listdir(start_directory_1)):
 
@@ -80,20 +82,20 @@ def run():
         contents = file.read()
         T0 = ast.literal_eval(contents)
         all_box.append(T0)
-
+        img_name.append(files[0:len(files)-12]+".tif")
         file.close()
 
     all_box = [conv_dict_to_class(i) for i in all_box]
 
     iter = 0
-    path = os.getcwd() + "/Labeled/cell02_EEA1 TagRFP_binary"
+    path = os.path.join(os.getcwd(),predicitons)
 
     track_map = {}
     object_map = {}
 
     for boxes in all_box:
 
-        img_id = get_img_path(iter,path)
+        img_id = img_name[iter]
 
         objects = tracker.update(boxes)
         # print(objects)
@@ -106,7 +108,7 @@ def run():
 
             else:
 
-                object_map[object_id].append(iter,conv_box_to_list(box))
+                object_map[object_id].append((iter,conv_box_to_list(box)))
 
             if track_map.get(object_id) is not None:
                 track_map[object_id].append(iter)
@@ -114,11 +116,9 @@ def run():
             else:
                 track_map[object_id] = [iter]
 
-            draw_box(img_id,box,(0,0,255),object_id,iter)
+            # draw_box(get_img_path(img_id,path),box,(0,0,255),object_id,iter)
 
         iter += 1
-
-    path = os.getcwd()
 
     sample_1 = open(os.path.join(path, "track.txt"),"w")
     sample_2 = open(os.path.join(path, "object.txt"),"w")
@@ -129,5 +129,6 @@ def run():
     print("Done")
 
 if __name__ == "__main__":
-    run()
+    # predictions = input("Enter directory containing masks to be tracked: ")
+    run(sys.argv[2])
 

@@ -3,15 +3,16 @@ import matplotlib.pyplot as plt
 import glob
 import ast
 import os
+import sys
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
 
 # print(dictionary)
 
-def run():
-    start_directory = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/bounding_box")
-    final_directory = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/complete_bounding_box")
+def run(predictions):
+    start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
+    final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
     for files in list(os.listdir(start_directory)):
 
@@ -44,7 +45,7 @@ def run():
 
             output[0].append(f)
 
-        filename = files[0:len(files)-8]
+        filename = files[0:len(files)-4]
         print(filename)
         sample = open(os.path.join(final_directory, filename+"_bb1.txt"),"w")
         print(output,file=sample)
@@ -101,4 +102,5 @@ def conv_dict_to_class(dictionary):
     return dictionary
 
 if __name__ == "__main__":
-    run()
+    # predictions = input("Enter directory containing masks to be tracked: ")
+    run(sys.argv[2])

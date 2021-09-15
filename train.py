@@ -56,8 +56,13 @@ def main():
     learning_rate = 1e-4
     optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
     path = os.getcwd()
-    train_loader = get_loaders(path)[0]
-    test_loader = get_loaders(path)[1]
+
+    data = input("Enter parent directory containing data images: ")
+    label = input("Enter parent directory containing ground truth masks: ")
+    cellname = input("Enter name of cell directory containing images in both parent directory: ")
+    
+    train_loader = get_loaders(path,data,label,cellname)[0]
+    test_loader = get_loaders(path,data,label,cellname)[1]
 
     num_classes = 2
     num_epochs = 20

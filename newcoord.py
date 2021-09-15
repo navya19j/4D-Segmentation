@@ -12,12 +12,12 @@ import ast
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
-def run():
+def run(predictions):
 
-    start_directory_1 = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/bounding_box")
-    start_directory_2 = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/complete_bounding_box")
+    start_directory_1 = os.path.join(os.getcwd(),predictions,"bounding_box")
+    start_directory_2 = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
 
-    final_directory = os.path.join(os.getcwd(),"Labeled/cell02_EEA1 TagRFP contours/3Dbox")
+    final_directory = os.path.join(os.getcwd(),predictions,"3D_Box")
 
     for files in list(os.listdir(start_directory_1)):
 
@@ -26,29 +26,29 @@ def run():
         file = open(file_path,"r")
         contents = file.read()
         dictionary = ast.literal_eval(contents)
-        file_path_2 = os.path.join(start_directory_2, files[0:len(files)-8] +"_bb1.txt")
+        file_path_2 = os.path.join(start_directory_2, files[0:len(files)-4] +"_bb1.txt")
 
 
         file = open(file_path_2,"r")
         contents = file.read()
         bbox = ast.literal_eval(contents)
 
-        path = os.getcwd() + "Labeled/cell02_EEA1 TagRFP_binary"
-        path_final = os.getcwd() + "Labeled/cell02_EEA1 TagRFP contours/temp"
+        path = os.path.join(os.getcwd(),predictions)
+        # path_final = os.getcwd() + "Labeled/cell02_EEA1 TagRFP contours/temp"
 
         imgbox = conv_dict_to_class(dictionary)
         bbox = conv_dict_to_class(bbox)
 
-        img = files[0:len(files)-8] + ".tif"
-        imgs = files[0:len(files)-8] + "f1" ".tif"
+        img = files[0:len(files)-4] + ".tif"
+        # imgs = files[0:len(files)-8] + "f1" ".tif"
         finalbbox = {}
         isvisited = {}
         final_arr = []
         depth = {}
         start = {}
         for i in range (0,80):
-
-            new_im = imread(path+"/"+img,key = i)
+            new_im = imread(os.path.join(path,img),key = i)
+            # new_im = imread(path+"/"+img,key = i)
             new_im = np.array(new_im)
             new_im_n = np.zeros((608,400,1))
             new_im_n[:,:,0] = new_im
@@ -98,7 +98,7 @@ def run():
             temp.append(depth[i])
             allbox[0].append(temp)
 
-        sample = open(os.path.join(final_directory, files[0:len(files)-8] +"_3Dboxes.txt"),"w")
+        sample = open(os.path.join(final_directory, files[0:len(files)-4] +"_3Dboxes.txt"),"w")
 
         print(allbox,file=sample)
         print("Done")
@@ -117,4 +117,5 @@ def conv_dict_to_class(dictionary):
     return dictionary
 
 if __name__ == "__main__":
-    run()
+    # predictions = input("Enter directory containing masks to be tracked: ")
+    run(sys.argv[2])

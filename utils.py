@@ -15,9 +15,9 @@ torch.set_printoptions(profile="full")
 from dataset_test import *
 # import torchio as tio
 
-def get_loaders(path):
+def get_loaders(path,data,label,cellname):
     
-    dataset_all = EndosomeDataset(path,None)
+    dataset_all = EndosomeDataset(path,data,label,cellname)
     torch.manual_seed(5)
 
     indices = torch.randperm(len(dataset_all)).tolist()
