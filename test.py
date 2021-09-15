@@ -15,6 +15,9 @@ def main():
     path = os.getcwd()
     data = input("Enter name of directory containing Data: ")
     cellname = input("Enter name of cell: ")
+    path_pred = os.path.join(path,"predicted_mask")
+    if (not os.path.isdir(path_pred)):
+        os.mkdir(path_pred)
     # Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
     test_loader = get_loaders_test(path,data,cellname)
     model = UNet(in_channels=1,out_channels=1)
