@@ -9,8 +9,8 @@ import plotly.express as px
 import streamlit as st
 from PIL import Image, ImageDraw
 import time
-
-from streamlit.elements import progress
+from tifffile import *
+from tifffile.tifffile import imread
 
 st.set_page_config(
     page_title="4D Endosome Segmentation", page_icon=":microscope:", layout="wide"
@@ -98,7 +98,7 @@ min_track_ids = list(
 )
 
 df_filter = df[df["track_id"].isin(min_track_ids)]
-df_filter["size"] = df_filter["w"] * df_filter["h"] * df_filter["d"]
+# df_filter["size"] = df_filter["w"] * df_filter["h"] * df_filter["d"]
 
 uniq_ids = df_filter["track_id"].unique()
 
@@ -112,7 +112,7 @@ st.markdown("---")
 st.header("Plots")
 # need to flip some axes due to being in img coordinates
 fig_xyz = px.scatter_3d(
-    df_filter, x="z", y="x", z="y", color="track_id", title="XYZ Coordinates" #, size=size
+    df_filter, x="z", y="x", z="y", color="track_id", title="XYZ Coordinates" #,size=size
 )
 
 
@@ -182,7 +182,7 @@ dist_cols[1].plotly_chart(fig_cumulative_dist, use_container_width=True)
 ##### Volumetric Data
 
 st.markdown("---")
-st.header("Volumetric Daa")
+st.header("Volumetric Data")
 
 # calculate volumetric data
 df_distance["size"] = df_distance["w"] * df_distance["h"] * df_distance["d"]
@@ -322,8 +322,7 @@ def load_img_as_np_array(path):
     img_array = (img_array)/float(k)
     return img_array
 
-from tifffile import *
-from tifffile.tifffile import imread
+
 
 img_path = st.text_input("Select an image", "Data_Resized/cell02_EEA1 TagRFP_T005.tif")
 mask_path = st.text_input("Select a label mask", "Labeled_Resized/cell02_EEA1 TagRFP_T005.tif")
