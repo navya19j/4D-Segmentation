@@ -317,6 +317,7 @@ def load_img_as_np_array(path):
         m_new = imread(path,key=i)
         img_array.append(np.array(m_new, dtype=np.float32))
 
+    # normalise img
     k = np.amax(img_array)
     img_array = np.array(img_array)
     img_array = (img_array)/float(k)
@@ -324,20 +325,22 @@ def load_img_as_np_array(path):
 
 
 
-img_path = st.text_input("Select an image", "Data_Resized/cell02_EEA1 TagRFP_T005.tif")
-mask_path = st.text_input("Select a label mask", "Labeled_Resized/cell02_EEA1 TagRFP_T005.tif")
+img_path = st.text_input("Select an image", "Data_Resized/APPL1/cell02_APPL1 GFP_T000 mask manual.tif")
+mask_path = st.text_input("Select a label mask", "Labeled_Resized/APPL1/cell02_APPL1 GFP_T000_mask.tif")
+pred_path = st.text_input("Select a prediction mask", "predicted_mask/1.tif")
 
 img_array = load_img_as_np_array(img_path)
 mask_array = load_img_as_np_array(mask_path)
+pred_array = load_img_as_np_array(pred_path)
 
 idx = st.slider("Select slice", 0, img_array.shape[2], 0)
 img_animation_button = st.button("Animate Images")
 img_header = st.markdown(f"Slice : {idx}")
 
 cols = st.columns(3)
-col_0 = cols[0].image(img_array[:, :, idx], caption="raw image", use_column_width=True)
-col_1 = cols[1].image(mask_array[:, :, idx], caption="label image", use_column_width=True)
-col_2 = cols[2].image(mask_array[:, :, idx], caption="predicted image", use_column_width=True)
+col_0 = cols[0].image(img_array[:, :, idx], clamp=True, caption="raw image", use_column_width=True)
+col_1 = cols[1].image(mask_array[:, :, idx], clamp=True, caption="label image", use_column_width=True)
+col_2 = cols[2].image(pred_array[:, :, idx], clamp=True, caption="predicted image", use_column_width=True)
 
 
 
@@ -345,14 +348,10 @@ if img_animation_button:
 
     for idx in range(img_array.shape[2]):
         img_header.markdown(f"Slice : {idx}/{img_array.shape[2]}")
-        col_0.image(img_array[:, :, idx], caption="raw image", use_column_width=True)
-        col_1.image(mask_array[:, :, idx], caption="label image", use_column_width=True)
-        col_2.image(mask_array[:, :, idx], caption="predicted image", use_column_width=True)
-        time.sleep(0.2)
-
-st.write("NOTE: No predicted mask avaialble atm. Need to be added")
-
-# TODO: get actuall predictions
+        col_0.image(img_array[:, :, idx], clamp=True, caption="raw image", use_column_width=True)
+        col_1.image(mask_array[:, :, idx], clamp=True, caption="label image", use_column_width=True)
+        col_2.image(pred_array[:, :, idx], clamp=True, caption="predicted image", use_column_width=True)
+        time.sleep(0.5)
 
 
 # Theme:
