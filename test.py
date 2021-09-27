@@ -28,7 +28,10 @@ def main():
     loss_fn = nn.BCEWithLogitsLoss()
     load_checkpoint(torch.load("checkpoint_1.pth.tar"),model,optimize)
     #check_accuracy(test_loader,model,"cuda",loss_fn)
-    save_prediction_test (test_loader,model,path,"cuda") 
+    one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
+    # print(len(test_loader))
+    img_path = os.path.join(path,data,cellname,one_img)
+    save_prediction_test(test_loader,model,path,"cuda",img_path) 
 
 if __name__ == "__main__":
     main()

@@ -37,6 +37,7 @@ class Dataset_Test(torch.utils.data.Dataset):
         img_array = (img_array)/float(k)
 
         img_array = np.expand_dims(img_array,axis=0)
+        # print(img_array.shape)
 
         return img_array
 

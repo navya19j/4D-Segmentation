@@ -46,11 +46,18 @@ def run(predictions):
         final_arr = []
         depth = {}
         start = {}
-        for i in range (0,80):
+
+        path_img = os.path.join(path,img)
+        img_arr = Image.open(path_img)
+        d = img_arr.n_frames
+
+        for i in range (0,d):
             new_im = imread(os.path.join(path,img),key = i)
             # new_im = imread(path+"/"+img,key = i)
             new_im = np.array(new_im)
-            new_im_n = np.zeros((608,400,1))
+            w = new_im.shape[0]
+            h = new_im.shape[1]
+            new_im_n = np.zeros((w,h,1))
             new_im_n[:,:,0] = new_im
             new_im_n = np.uint8(new_im_n)
             res = new_im_n.copy()

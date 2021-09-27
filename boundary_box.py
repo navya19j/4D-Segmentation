@@ -13,16 +13,23 @@ def create_bound_box(predictions):
     path_final = os.path.join(os.getcwd(),predictions ,"bounding_box")
     # all_ims = list(sorted(os.listdir(path)))
     files = (file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)))
-    all_ims = list(sorted(files))
+    all_ims = list(sorted(files))  
+
+    img_arr = Image.open(os.path.join(path,all_ims[0]))
+    d = img_arr.n_frames
+
     for img in all_ims:
     
         final_arr = []
         bounding_coord = {}
         
-        for i in range (0,80):
+        for i in range (0,d):
+
             new_im = imread(os.path.join(path,img),key = i)
             new_im = np.array(new_im)
-            new_im_n = np.zeros((608,400,1))
+            w = new_im.shape[0]
+            h = new_im.shape[1]
+            new_im_n = np.zeros((w,h,1))
             new_im_n[:,:,0] = new_im
             new_im_n = np.uint8(new_im_n)
             res = new_im_n.copy()
@@ -56,3 +63,4 @@ def create_bound_box(predictions):
 if __name__ == '__main__':
     # predictions = input("Enter directory containing masks to be tracked: ")
     create_bound_box(sys.argv[2])
+    print("Done")

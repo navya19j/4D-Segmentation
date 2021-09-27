@@ -31,6 +31,7 @@ def get_loaders(path,data,label,cellname):
     dataset_train = torch.utils.data.Subset(dataset_all, indices[:idx])
 
     dataset_test = torch.utils.data.Subset(dataset_all, indices[idx:])
+    print("Chosen Test Images: ")
     print(indices[idx:])
 
     data_loader_train = torch.utils.data.DataLoader(
@@ -44,14 +45,13 @@ def get_loaders(path,data,label,cellname):
 def get_loaders_test(path,data,cellname):
     
     dataset_all = Dataset_Test(path,data,cellname)
-
     data_loader_test = torch.utils.data.DataLoader(
         dataset_all, batch_size=1,num_workers=0, shuffle=False,pin_memory=True)
 
     return data_loader_test
 
 #SAVE_CHECKPOINT
-def save_checkpoint(state, filename = "checkpoint_1.pth.tar"):
+def save_checkpoint(state, filename = "checkpoint_trial.pth.tar"):
     print("Saving Checkpoint")
     torch.save(state,filename)
 
@@ -92,19 +92,19 @@ def check_accuracy(loader,model,device,loss_func):
             dice_c =  ((2*torch.sum(pred*y))/(torch.sum(pred+y) + 1e-7))
             dice_score += dice_c.item()
             
-    print("Length of Loader: ")
-    print(len(loader))
-    print("Intersection over Union: ")
-    print(iou_net/(len(loader)))
-    print("Dice Score: ")
-    print(dice_score/(len(loader)))
-    print("Loss: ")
-    print(loss_f/(len(loader)))
+    # print("Length of Loader: ")
+    # print(len(loader))
+    # print("Intersection over Union: ")
+    # print(iou_net/(len(loader)))
+    # print("Dice Score: ")
+    # print(dice_score/(len(loader)))
+    # print("Loss: ")
+    # print(loss_f/(len(loader)))
 
     return (iou_net/(len(loader)),dice_score/(len(loader)),loss_f/(len(loader)))
     model.train()
 
-def save_prediction (loader,model,path,device):
+def save_prediction (loader,model,path,device,img_path):
 
     model.eval()
     i = 0
@@ -124,23 +124,20 @@ def save_prediction (loader,model,path,device):
         y = y.squeeze(0)
         y = y*255.0
 
-        imsave(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",x.detach().cpu().numpy())
-        imsave(path + "/actual_mask/" + str(batch_idx) +str(i) + ".tif",y.detach().cpu().numpy())
-
-        change_dims(path + "/predicted_mask/" +  str(batch_idx) +str(i) + ".tif",path + "/actual_mask/"+ str(batch_idx) +str(i) + ".tif")
+        change_dims_one(path + "/predicted_mask/" + str(i) + ".tif",x,img_path)
 
     model.train()
 
 
-def save_prediction_test (loader,model,path,device):
+def save_prediction_test (loader,model,path,device,img_path):
 
     model.eval()
     i = 0
+
     for batch_idx, x in enumerate(loader):
         i+=1
         x = x.float().to(device)
         n_c = x.shape[2]
-
         with torch.no_grad():
             x = torch.sigmoid(model(x)).detach()
         
@@ -150,51 +147,100 @@ def save_prediction_test (loader,model,path,device):
         x = x*255.0
 
         # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
-        change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x)
+        change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x,img_path)
         del x
 
     model.train()
 
-def change_dims_one(path1,img):
+def get_start(x,max_val):
 
-        mask_predicted = img.cpu().detach().numpy()
-        d = 80
-        h_mask,w_mask = 400,608
-        mask_array = np.zeros([d,w_mask,h_mask])
+    start = math.ceil((max_val-x)/2)-1
+    if (start!=-1):
+        return start
+    else:
+        return start+1
 
-        for i in range (0,80):
-            temp = mask_predicted[i]
-            x = cv2.resize(temp, (608, 608),interpolation = cv2.INTER_CUBIC)
-            # x = mask_predicted.resize((608,608),resample =Image.NEAREST)
-            x_im = np.array(x)[:,103:503]
-            mask_array[i,:,:] = x_im
-        
-        # mask_array = np.where(mask_array > 0, 1, 0)
-        # mask_array = mask_array*255
+def change_dims_one(path1,img,img_path):
 
-        imsave(path1,mask_array)
-        del mask_array 
-        print("done")  
+    mask_predicted = img.cpu().detach().numpy()
 
-def change_dims(path1,path2):
+    img = Image.open(img_path)
+    org_image = []
+    for i in range (0,img.n_frames):
+        res = img.seek(i)
+        org_image.append(np.array(img,dtype=np.float32))
+    org_image = np.array(org_image,dtype=np.float32)
 
-        mask_predicted = Image.open(path1)
-        mask_actual = Image.open(path2)
-        d = 80
-        h_mask,w_mask = 400,608
-        mask_array = np.zeros([d,w_mask,h_mask])
-        img_array = np.zeros([d,w_mask,h_mask])
+    d = org_image.shape[0]
+    w = org_image.shape[1]
+    h = org_image.shape[2]
 
-        for i in range (0,80):
-            mask_predicted.seek(i)
-            x = mask_predicted.resize((608,608),resample =Image.NEAREST)
-            x_im = np.array(x)[:,103:503]
-            img_array[i,:,:] = x_im
+    mask_array = np.zeros([d,w,h])
 
-            mask_actual.seek(i)
-            y = mask_actual.resize((608,608),resample =Image.NEAREST)
-            y_im = np.array(y)[:,103:503]
-            mask_array[i,:,:] = y_im
+    max_dim = max(max(h,w),d)
+
+    for i in range (0,d):
+        temp = mask_predicted[i]
+        x = cv2.resize(temp, (max_dim, max_dim),interpolation = cv2.INTER_CUBIC)
+        # x = mask_predicted.resize((608,608),resample =Image.NEAREST)
+        x_im = (np.array(x))[get_start(w,max_dim):get_start(w,max_dim)+w,get_start(h,max_dim):get_start(h,max_dim)+h]
+        # print(x_im.shape)
+        mask_array[i,:,:] = x_im
+    
+    # mask_array = np.where(mask_array > 0, 1, 0)
+    # mask_array = mask_array*255
+
+    imsave(path1,mask_array)
+    del mask_array 
+    print("Saved Predicted Mask")
+
+
+# change this 
+
+# def change_dims(path1,path2,x,y,img_path):
+
+#     mask_predicted = x.cpu().detach().numpy()
+#     actual_mask = y.cpu().detach().numpy()
+
+#     org_image = Image.open(img_path)
+
+#     d = org_image.shape[0]
+#     h = org_image.shape[1]
+#     w = org_image.shape[2]
+
+#     max_dim = max(max(h,w),d)
+
+#     for i in range (0,d):
+#         temp = mask_predicted[i]
+#         x = cv2.resize(temp, (max_dim, max_dim),interpolation = cv2.INTER_CUBIC)
+#         # x = mask_predicted.resize((608,608),resample =Image.NEAREST)
+#         x_im = np.array(x)[get_start(h,max_dim):get_start(h,max_dim)+h,get_start(w,max_dim):get_start(w,max_dim)+w]
+#         mask_array[i,:,:] = x_im
+    
+#     # mask_array = np.where(mask_array > 0, 1, 0)
+#     # mask_array = mask_array*255
+
+#     imsave(path1,mask_array)
+#     del mask_array 
+#     print("done")
+
+#         mask_predicted = Image.open(path1)
+#         mask_actual = Image.open(path2)
+#         d = 80
+#         h_mask,w_mask = 400,608
+#         mask_array = np.zeros([d,w_mask,h_mask])
+#         img_array = np.zeros([d,w_mask,h_mask])
+
+#         for i in range (0,80):
+#             mask_predicted.seek(i)
+#             x = mask_predicted.resize((608,608),resample =Image.NEAREST)
+#             x_im = np.array(x)[:,103:503]
+#             img_array[i,:,:] = x_im
+
+#             mask_actual.seek(i)
+#             y = mask_actual.resize((608,608),resample =Image.NEAREST)
+#             y_im = np.array(y)[:,103:503]
+#             mask_array[i,:,:] = y_im
             
-        imsave(path1,img_array)
-        imsave(path2,mask_array)      
+#         imsave(path1,img_array)
+#         imsave(path2,mask_array)      

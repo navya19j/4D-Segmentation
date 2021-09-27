@@ -66,7 +66,7 @@ def main():
 
     num_classes = 2
     num_epochs = 20
-    load_model = True
+    load_model = False
     scaler = torch.cuda.amp.GradScaler()
     dice_test = []
     iou_test = []
@@ -101,7 +101,10 @@ def main():
             iou_train.append(b)
             loss_train.append(c)
 
-    save_prediction (test_loader,model,path,device) 
+    one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
+    img_path = os.path.join(path,data,cellname,one_img)
+
+    save_prediction (test_loader,model,path,device,img_path) 
     print("Test Trends: ")
     print("Dice: ")
     print(dice_test)
