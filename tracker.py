@@ -14,7 +14,7 @@ class Tracker:
     # objects contains all current ids and positions of objects being tracked
     # active counter for sequential tracks of each object
 
-    def __init__(self,active_threshold = 1, non_active_threshold = 10, iou_threshold = 0.4):
+    def __init__(self,active_threshold = 0, non_active_threshold = 10, iou_threshold = 0.4):
         self.next_box_id = 0
         self.objects = OrderedDict()
         self.active = OrderedDict()
