@@ -24,9 +24,8 @@ def main():
     test_loader = get_loaders_test(path,data,cellname)
     model = UNet(in_channels=1,out_channels=1)
     model.to("cuda")
-    optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
     loss_fn = nn.BCEWithLogitsLoss()
-    load_checkpoint(torch.load("checkpoint_1.pth.tar"),model,optimize)
+    load_checkpoint_test(torch.load("checkpoint_1.pth.tar"),model)
     #check_accuracy(test_loader,model,"cuda",loss_fn)
     one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
     # print(len(test_loader))
