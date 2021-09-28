@@ -15,6 +15,8 @@ torch.set_printoptions(profile="full")
 from dataset_test import *
 # import torchio as tio
 
+test = []
+
 def get_loaders(path,data,label,cellname):
     
     dataset_all = EndosomeDataset(path,data,label,cellname)
@@ -33,6 +35,7 @@ def get_loaders(path,data,label,cellname):
     dataset_test = torch.utils.data.Subset(dataset_all, indices[idx:])
     print("Chosen Test Images: ")
     print(indices[idx:])
+    test = indices[idx:]
 
     data_loader_train = torch.utils.data.DataLoader(
         dataset_train, batch_size=1, num_workers=0, shuffle=True,pin_memory=True)
@@ -51,17 +54,25 @@ def get_loaders_test(path,data,cellname):
     return data_loader_test
 
 #SAVE_CHECKPOINT
-def save_checkpoint(state, filename = "checkpoint_trial.pth.tar"):
-    print("Saving Checkpoint")
+def save_checkpoint_train(state, filename = "checkpoint_train.pth.tar"):
+    print("Saving Checkpoint Train")
+    torch.save(state,filename)
+
+def save_checkpoint_test(state, filename = "checkpoint_test.pth.tar"):
+    print("Saving Checkpoint Test")
     torch.save(state,filename)
 
 #LOAD_CHECKPOINT
-def load_checkpoint(checkpoint,model,optimize):
+def load_checkpoint_train(checkpoint,model,optimize):
     print("Loading Checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
     optimize.load_state_dict(checkpoint["optimizer"])
     model.eval()
     # 
+def load_checkpoint_test(checkpoint,model):
+    print("Loading Checkpoint")
+    model.load_state_dict(checkpoint["state_dict"])
+    model.eval()
 
 #CHECK ACCURACY
 def iou(outputs,labels):

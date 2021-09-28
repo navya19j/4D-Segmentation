@@ -66,7 +66,11 @@ def main():
 
     num_classes = 2
     num_epochs = 20
-    load_model = False
+    transfer = input("Do you want to train further on trained data?(Y/N) :")
+    if (transfer == "Y"):
+        load_model = True
+    else:
+        load_model = False
     scaler = torch.cuda.amp.GradScaler()
     dice_test = []
     iou_test = []
@@ -77,14 +81,17 @@ def main():
     loss_train = []
 
     if load_model:
-        load_checkpoint(torch.load("checkpoint_1.pth.tar"),model,optimize)
+        load_checkpoint(torch.load("checkpoint_train.pth.tar"),model,optimize)
 
     for epoch in range (num_epochs):
 
         train_one_epoch(train_loader,model,optimize,loss_fn,scaler,device)
         try:
             checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
-            save_checkpoint(checkpoint)
+            save_checkpoint_train(checkpoint)
+            print("Saved")
+            checkpoint_test = {"state_dict": model.state_dict()}
+            save_checkpoint_test(checkpoint_test)
             print("Saved")
         except:
             print("Error")
