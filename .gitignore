@@ -4,4 +4,10 @@ app.py
 cell02_APPL1 GFP_T000*.tif
 1.tif
 data.csv
+*.pt
+*.pth.tar
+model_test.py
 .DS_Store
+predicted_mask/*
+
+

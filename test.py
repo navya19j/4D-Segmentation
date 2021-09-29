@@ -19,6 +19,8 @@ def main():
     if (not os.path.isdir(pred_mask)):
         os.mkdir(pred_mask)
 
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     learning_rate = 1e-4
     # Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
     test_loader = get_loaders_test(path,data,cellname)
