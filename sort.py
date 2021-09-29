@@ -32,8 +32,6 @@ def run(predictions):
             n+=1
             tracked = assign_detection_to_tracker(tracked,temp[i],0.2,[])
 
-        # print(tracked)
-
         output = {0:[]}
 
         for i in tracked:
@@ -46,7 +44,7 @@ def run(predictions):
             output[0].append(f)
 
         filename = files[0:len(files)-4]
-        print(filename)
+        # print(filename)
         sample = open(os.path.join(final_directory, filename+"_bb1.txt"),"w")
         print(output,file=sample)
         print("Done")
@@ -104,3 +102,4 @@ def conv_dict_to_class(dictionary):
 if __name__ == "__main__":
     # predictions = input("Enter directory containing masks to be tracked: ")
     run(sys.argv[2])
+    print("Done")

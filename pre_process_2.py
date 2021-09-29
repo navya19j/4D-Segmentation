@@ -18,14 +18,27 @@ def conv_to_bw(arr):
 def get_final(path_dir_1,mask):
     
     img = Image.open(path_dir_1)
-    images = get_binary_image(img)
+    
+    output = get_binary_image(img)
+    images = output[0]
+    d = output[1]
+    h = output[2]
+    w = output[3]
+    max_dim = output[4]
+
+    start = math.ceil(float((max_dim-d)/2))
+    if (start!=0):
+        start = start+1
+    end = start+128
+    
     final = []
 
-    for i in range (264,392):
+    for i in range (start,end):
         img = images[i]
         res = cv2.resize(img, dsize=(128, 128), interpolation=cv2.INTER_CUBIC)
         final.append(np.array(res))
 
     out = np.array(final)
+    # print(out.shape)
  
     return out
