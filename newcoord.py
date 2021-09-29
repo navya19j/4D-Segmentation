@@ -55,16 +55,16 @@ def run(predictions):
             d = img_arr.shape[0]
 
         for i in range (0,d):
-            new_im = imread(os.path.join(path,img),key = i)
-            # new_im = imread(path+"/"+img,key = i)
-            new_im = np.array(new_im)
-            w = new_im.shape[0]
-            h = new_im.shape[1]
-            new_im_n = np.zeros((w,h,1))
-            new_im_n[:,:,0] = new_im
-            new_im_n = np.uint8(new_im_n)
-            res = new_im_n.copy()
-            res = cv2.cvtColor(res,cv2.COLOR_GRAY2RGB)
+            # new_im = imread(os.path.join(path,img),key = i)
+            # # new_im = imread(path+"/"+img,key = i)
+            # new_im = np.array(new_im)
+            # w = new_im.shape[0]
+            # h = new_im.shape[1]
+            # new_im_n = np.zeros((w,h,1))
+            # new_im_n[:,:,0] = new_im
+            # new_im_n = np.uint8(new_im_n)
+            # res = new_im_n.copy()
+            # res = cv2.cvtColor(res,cv2.COLOR_GRAY2RGB)
             finalbbox[i+1] = []
 
             if (imgbox.get(i+1)!=None):
@@ -80,7 +80,7 @@ def run(predictions):
                     coord = bb_iou[out]
 
                     if (out >= 0.2):
-                        cv2.rectangle(res,(coord.x,coord.y),(coord.x+coord.w,coord.y+coord.h),(0,255,0),1)
+                        # cv2.rectangle(res,(coord.x,coord.y),(coord.x+coord.w,coord.y+coord.h),(0,255,0),1)
                         bb = [coord.x,coord.y,coord.w,coord.h]
 
                         if (coord in isvisited):
@@ -94,7 +94,7 @@ def run(predictions):
                             
                         finalbbox[i+1].append(bb)
 
-            final_arr.append(res)
+            # final_arr.append(res)
 
         # imsave(path_final+"/"+imgs,final_arr)
         # print("Done")
