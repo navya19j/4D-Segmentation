@@ -25,14 +25,16 @@ def main():
     # Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
     test_loader = get_loaders_test(path,data,cellname)
     model = UNet(in_channels=1,out_channels=1)
-    model.to("cuda")
+    model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
-    load_checkpoint_test(torch.load("checkpoint_1.pth.tar"),model)
+    checkpt = input("Enter name of the model tar file: ")
+    load_checkpoint_test(torch.load(checkpt, map_location=device),model)
+    print("Loaded")
     #check_accuracy(test_loader,model,"cuda",loss_fn)
     one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
     # print(len(test_loader))
     img_path = os.path.join(path,data,cellname,one_img)
-    save_prediction_test(test_loader,model,path,"cuda",img_path) 
+    save_prediction_test(test_loader,model,path,device,img_path) 
 
 if __name__ == "__main__":
     main()
