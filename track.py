@@ -94,7 +94,8 @@ def run(predicitons):
     track_map = {}
     object_map = {}
 
-    for boxes in all_box:
+    loop = tqdm(all_box)
+    for i,boxes in enumerate(loop):
 
         img_id = img_name[iter]
 
