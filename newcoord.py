@@ -48,7 +48,7 @@ def run(predictions):
         start = {}
 
         path_img = os.path.join(path,img)
-        img_arr = imread(os.path.join(path,all_ims[0]))
+        img_arr = imread(path_img)
         # print(img_arr.shape)
         d = img_arr.shape[0]
 
