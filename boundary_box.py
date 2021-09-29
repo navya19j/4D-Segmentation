@@ -15,8 +15,9 @@ def create_bound_box(predictions):
     files = (file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)))
     all_ims = list(sorted(files))  
 
-    img_arr = Image.open(os.path.join(path,all_ims[0]))
-    d = img_arr.n_frames
+    img_arr = imread(os.path.join(path,all_ims[0]))
+    # print(img_arr.shape)
+    d = img_arr.shape[0]
 
     for img in all_ims:
     
