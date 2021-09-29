@@ -48,8 +48,9 @@ def run(predictions):
         start = {}
 
         path_img = os.path.join(path,img)
-        img_arr = Image.open(path_img)
-        d = img_arr.n_frames
+        img_arr = imread(os.path.join(path,all_ims[0]))
+        # print(img_arr.shape)
+        d = img_arr.shape[0]
 
         for i in range (0,d):
             new_im = imread(os.path.join(path,img),key = i)
