@@ -9,3 +9,5 @@ data.csv
 model_test.py
 .DS_Store
 predicted_mask/*
+
+
