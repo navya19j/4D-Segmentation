@@ -51,7 +51,7 @@ def create_bound_box(predictions):
                     bounding_coord[i+1] = new
                 else:
                     bounding_coord[i+1] = [[x,y,w,h]]
-                cv2.rectangle(res,(x,y),(x+w,y+h),(0,255,0),1)
+                # cv2.rectangle(res,(x,y),(x+w,y+h),(0,255,0),1)
             final_arr.append(res)
         sample = open(os.path.join(path_final, img[:len(img)-4]+".txt"),"w")
         # sample = open(path_final+"/"+img[:len(img)-4]+".txt","w")
