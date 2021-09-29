@@ -8,6 +8,7 @@ from PIL import Image,ImageDraw
 import numpy as np
 import matplotlib.pyplot as plt
 import glob
+from tqdm import tqdm
 import ast
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
@@ -19,8 +20,8 @@ def run(predictions):
 
     final_directory = os.path.join(os.getcwd(),predictions,"3D_Box")
     x = 0
-
-    for files in list(os.listdir(start_directory_1)):
+    loop = tqdm(list(os.listdir(start_directory_1)))
+    for i,files in enumerate(loop):
 
         file_path = os.path.join(start_directory_1,files)
 
@@ -111,7 +112,6 @@ def run(predictions):
         sample = open(os.path.join(final_directory, files[0:len(files)-4] +"_3Dboxes.txt"),"w")
 
         print(allbox,file=sample)
-        print("Done")
         x+=1
 
 def conv_dict_to_class(dictionary):

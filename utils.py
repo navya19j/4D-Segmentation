@@ -103,14 +103,14 @@ def check_accuracy(loader,model,device,loss_func):
             dice_c =  ((2*torch.sum(pred*y))/(torch.sum(pred+y) + 1e-7))
             dice_score += dice_c.item()
             
-    # print("Length of Loader: ")
-    # print(len(loader))
-    # print("Intersection over Union: ")
-    # print(iou_net/(len(loader)))
-    # print("Dice Score: ")
-    # print(dice_score/(len(loader)))
-    # print("Loss: ")
-    # print(loss_f/(len(loader)))
+    print("Length of Loader: ")
+    print(len(loader))
+    print("Intersection over Union: ")
+    print(iou_net/(len(loader)))
+    print("Dice Score: ")
+    print(dice_score/(len(loader)))
+    print("Loss: ")
+    print(loss_f/(len(loader)))
 
     return (iou_net/(len(loader)),dice_score/(len(loader)),loss_f/(len(loader)))
     model.train()
@@ -119,7 +119,8 @@ def save_prediction (loader,model,path,device,img_path):
 
     model.eval()
     i = 0
-    for batch_idx, (x,y) in enumerate(loader):
+    loop = tqdm(loader)
+    for batch_idx, (x,y) in enumerate(loop):
         i+=1
         x = x.float().to(device)
         n_c = x.shape[2]
@@ -136,6 +137,7 @@ def save_prediction (loader,model,path,device,img_path):
         y = y*255.0
 
         change_dims_one(path + "/predicted_mask/" + str(i) + ".tif",x,img_path)
+    print("Saved Predicted Masks")
 
     model.train()
 
@@ -145,7 +147,8 @@ def save_prediction_test (loader,model,path,device,img_path):
     model.eval()
     i = 0
 
-    for batch_idx, x in enumerate(loader):
+    loop = tqdm(loader)
+    for batch_idx, x in enumerate(loop):
         i+=1
         x = x.float().to(device)
         n_c = x.shape[2]
@@ -160,6 +163,7 @@ def save_prediction_test (loader,model,path,device,img_path):
         # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
         change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x,img_path)
         del x
+    print("Saved Predicted Masks")
 
     model.train()
 
@@ -202,8 +206,7 @@ def change_dims_one(path1,img,img_path):
     # mask_array = mask_array*255
 
     imsave(path1,mask_array)
-    del mask_array 
-    print("Saved Predicted Mask")
+    del mask_array
 
 
 # change this 

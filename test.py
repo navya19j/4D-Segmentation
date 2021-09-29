@@ -27,7 +27,13 @@ def main():
     model = UNet(in_channels=1,out_channels=1)
     model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
-    load_checkpoint_test(torch.load("checkpoint_1.pth.tar", map_location=device),model)
+
+    checkpt = input("Enter name of the model tar file: ")
+    load_checkpoint_test(torch.load(checkpt, map_location=device),model)
+    print("Loaded")
+# =======
+#     load_checkpoint_test(torch.load("checkpoint_1.pth.tar", map_location=device),model)
+# >>>>>>> main
     #check_accuracy(test_loader,model,"cuda",loss_fn)
     one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
     # print(len(test_loader))

@@ -4,6 +4,7 @@ import glob
 import ast
 import os
 import sys
+from tqdm import tqdm
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
@@ -14,7 +15,8 @@ def run(predictions):
     start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
     final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
-    for files in list(os.listdir(start_directory)):
+    loop = tqdm(list(os.listdir(start_directory)))
+    for i,files in enumerate(loop):
 
         file_path = os.path.join(start_directory,files)
 
@@ -47,7 +49,6 @@ def run(predictions):
         # print(filename)
         sample = open(os.path.join(final_directory, filename+"_bb1.txt"),"w")
         print(output,file=sample)
-        print("Done")
 
         file.close()
 
@@ -102,4 +103,3 @@ def conv_dict_to_class(dictionary):
 if __name__ == "__main__":
     # predictions = input("Enter directory containing masks to be tracked: ")
     run(sys.argv[2])
-    print("Done")

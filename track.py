@@ -4,6 +4,7 @@ import glob
 import ast
 import cv2
 import sys
+from tqdm import tqdm
 from helper3D import *
 from tifffile import *
 from tracker import *
@@ -75,8 +76,8 @@ def run(predicitons):
 
     tracker = Tracker()
     img_name = []
-    
-    for files in list(os.listdir(start_directory_1)):
+    loop = tqdm(list(os.listdir(start_directory_1)))
+    for i,files in enumerate(loop):
 
         file = open(os.path.join(start_directory_1,files),"r")
         contents = file.read()
@@ -124,9 +125,7 @@ def run(predicitons):
     sample_2 = open(os.path.join(path, "object.txt"),"w")
 
     print(track_map,file = sample_1)
-    print("Done")
     print(object_map,file = sample_2)
-    print("Done")
 
 if __name__ == "__main__":
     # predictions = input("Enter directory containing masks to be tracked: ")

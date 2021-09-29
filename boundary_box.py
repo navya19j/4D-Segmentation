@@ -2,6 +2,8 @@ from torch import dtype
 import cv2
 import numpy as np
 import os,sys
+from tqdm import tqdm
+
 #np.set_printoptions(threshold = 100000000)
 from tifffile import *
 from PIL import Image,ImageDraw
@@ -19,7 +21,8 @@ def create_bound_box(predictions):
     # print(img_arr.shape)
     d = img_arr.shape[0]
 
-    for img in all_ims:
+    loop = tqdm(all_ims)
+    for i,img in enumerate(loop):
     
         final_arr = []
         bounding_coord = {}
@@ -53,6 +56,7 @@ def create_bound_box(predictions):
                     bounding_coord[i+1] = [[x,y,w,h]]
                 # cv2.rectangle(res,(x,y),(x+w,y+h),(0,255,0),1)
             final_arr.append(res)
+
         sample = open(os.path.join(path_final, img[:len(img)-4]+".txt"),"w")
         # sample = open(path_final+"/"+img[:len(img)-4]+".txt","w")
         print(bounding_coord, file = sample)
@@ -64,4 +68,3 @@ def create_bound_box(predictions):
 if __name__ == '__main__':
     # predictions = input("Enter directory containing masks to be tracked: ")
     create_bound_box(sys.argv[2])
-    print("Done")

@@ -28,10 +28,15 @@ if (to_track == "Y"):
     if (not os.path.isdir(path_3d)):
         os.mkdir(path_3d)
 
+    print("Generating Bounding Boxes")
     call(["python", "boundary_box.py","--dir",dir])
+    print("Tracking across z-direction")
     call(["python", "sort.py","--dir",dir])
+    print("Generating 3D bounding Boxes")
     call(["python", "newcoord.py","--dir",dir])
+    print("Tracking across time")
     call(["python", "track.py","--dir",dir])
+    print("Saved final trajectory in object.txt and track.txt")
 
     # add visualisation here
 
