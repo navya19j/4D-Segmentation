@@ -18,6 +18,7 @@ def run(predictions):
     start_directory_2 = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
 
     final_directory = os.path.join(os.getcwd(),predictions,"3D_Box")
+    x = 0
 
     for files in list(os.listdir(start_directory_1)):
 
@@ -47,10 +48,11 @@ def run(predictions):
         depth = {}
         start = {}
 
-        path_img = os.path.join(path,img)
-        img_arr = imread(path_img)
-        # print(img_arr.shape)
-        d = img_arr.shape[0]
+        if (x==0):
+            path_img = os.path.join(path,img)
+            img_arr = imread(path_img)
+            # print(img_arr.shape)
+            d = img_arr.shape[0]
 
         for i in range (0,d):
             new_im = imread(os.path.join(path,img),key = i)
@@ -110,6 +112,7 @@ def run(predictions):
 
         print(allbox,file=sample)
         print("Done")
+        x+=1
 
 def conv_dict_to_class(dictionary):
 
