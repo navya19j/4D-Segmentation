@@ -17,7 +17,7 @@ def run(predictions):
     
     print(f"Tracking across z-direction")
 
-    loop = tqdm(list(os.listdir(start_directory)))
+    loop = tqdm(list(sorted(os.listdir(start_directory))))
     for idx,files in enumerate(loop):
 
         file_path = os.path.join(start_directory,files)
