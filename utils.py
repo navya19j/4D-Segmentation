@@ -143,7 +143,7 @@ def save_prediction (loader,model,path,device,img_path):
             name = all_ims[i]
         except:
             name = i+".tif"
-        change_dims_one(path + "/" +  all_ims[i],x,img_path)
+        change_dims_one(path + "/" + name,x,img_path)
         i+=1
         del x
         del y
