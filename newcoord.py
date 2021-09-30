@@ -20,7 +20,7 @@ def run(predictions):
 
     final_directory = os.path.join(os.getcwd(),predictions,"3D_Box")
     x = 0
-    loop = tqdm(list(os.listdir(start_directory_1)))
+    loop = tqdm(list(sorted(os.listdir(start_directory_1))))
     for idx,files in enumerate(loop):
         loop.set_description(f"Image {idx+1}: Loading Tracks")
         file_path = os.path.join(start_directory_1,files)
