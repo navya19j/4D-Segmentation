@@ -76,7 +76,7 @@ def run(predicitons):
 
     tracker = Tracker()
     img_name = []
-    loop = tqdm(list(os.listdir(start_directory_1)))
+    loop = tqdm(list(sorted(os.listdir(start_directory_1))))
     for i,files in enumerate(loop):
         loop.set_description(f"Loading Tracking Data {i+1}/{len(loop)}")
 
