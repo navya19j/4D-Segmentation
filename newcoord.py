@@ -14,15 +14,15 @@ from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
 def run(predictions):
-
+    print(f"Generating 3D Bounding Boxes")
     start_directory_1 = os.path.join(os.getcwd(),predictions,"bounding_box")
     start_directory_2 = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
 
     final_directory = os.path.join(os.getcwd(),predictions,"3D_Box")
     x = 0
     loop = tqdm(list(os.listdir(start_directory_1)))
-    for i,files in enumerate(loop):
-
+    for idx,files in enumerate(loop):
+        loop.set_description(f"Image {idx+1}: Loading Tracks")
         file_path = os.path.join(start_directory_1,files)
 
         file = open(file_path,"r")
@@ -56,6 +56,7 @@ def run(predictions):
             d = img_arr.shape[0]
 
         for i in range (0,d):
+            loop.set_description(f"Image {idx+1}: Depth {i+1}/{d}")
             # new_im = imread(os.path.join(path,img),key = i)
             # # new_im = imread(path+"/"+img,key = i)
             # new_im = np.array(new_im)
