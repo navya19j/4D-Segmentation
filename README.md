@@ -123,10 +123,5 @@ track.py - tracking endosomes using linear assignment
 
 - _track.txt - tracked pairs of boxes (i,i+1 : output of dsort.py)
 
-- 00i.tif - contour bounding boxes
-
-- 00if.tif - 3D bounding boxes, maximum overlap
-
-
 ## Citation
 TODO
