@@ -78,6 +78,7 @@ def run(predicitons):
     img_name = []
     loop = tqdm(list(os.listdir(start_directory_1)))
     for i,files in enumerate(loop):
+        loop.set_description(f"Loading Tracking Data {i+1}/{len(loop)}")
 
         file = open(os.path.join(start_directory_1,files),"r")
         contents = file.read()
@@ -97,6 +98,7 @@ def run(predicitons):
     loop = tqdm(all_box)
     for i,boxes in enumerate(loop):
 
+        loop.set_description(f"Tracking 3D Bounding Box {i+1}/{len(loop)}")
         img_id = img_name[iter]
 
         objects = tracker.update(boxes)
