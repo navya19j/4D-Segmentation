@@ -150,6 +150,7 @@ def save_prediction_test (loader,model,path,device,img_path):
     loop = tqdm(loader)
     for batch_idx, x in enumerate(loop):
         i+=1
+        loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
         x = x.float().to(device)
         n_c = x.shape[2]
         with torch.no_grad():
@@ -161,6 +162,7 @@ def save_prediction_test (loader,model,path,device,img_path):
         x = x*255.0
 
         # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
+        loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
         change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x,img_path)
         del x
     print("Saved Predicted Masks")

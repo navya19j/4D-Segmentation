@@ -29,15 +29,13 @@ def main():
     loss_fn = nn.BCEWithLogitsLoss()
 
     checkpt = input("Enter name of the model tar file: ")
-    load_checkpoint_test(torch.load(checkpt, map_location=device),model)
-    print("Loaded")
-# =======
-#     load_checkpoint_test(torch.load("checkpoint_1.pth.tar", map_location=device),model)
-# >>>>>>> main
-    #check_accuracy(test_loader,model,"cuda",loss_fn)
+    load_checkpoint_test(torch.load(checkpt, map_location=device), model)
     one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
-    # print(len(test_loader))
     img_path = os.path.join(path,data,cellname,one_img)
+    
+    print(f"Loaded {len(test_loader)} test images from {os.path.join(path, data, cellname)}.")
+    print(f"Loaded checkpoint: {checkpt} on {device} device.")
+    
     save_prediction_test(test_loader,model,path,device,img_path) 
 
 if __name__ == "__main__":
