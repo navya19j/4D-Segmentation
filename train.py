@@ -81,7 +81,7 @@ def main():
     loss_train = []
 
     if load_model:
-        load_checkpoint(torch.load("checkpoint_train.pth.tar"),model,optimize)
+        load_checkpoint_train(torch.load("checkpoint_train.pth.tar", map_location=device),model,optimize)
 
     for epoch in range (num_epochs):
 
@@ -108,6 +108,7 @@ def main():
             iou_train.append(b)
             loss_train.append(c)
 
+    root = os.getcwd()
     one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
     img_path = os.path.join(path,data,cellname,one_img)
 
