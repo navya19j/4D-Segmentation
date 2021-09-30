@@ -12,11 +12,12 @@ from PIL import Image,ImageDraw
 
 def create_bound_box(predictions):
     path = os.path.join(os.getcwd(),predictions)
-    path_final = os.path.join(os.getcwd(),predictions ,"bounding_box")
+    path_final = os.path.join(os.getcwd(),predictions,"bounding_box")
     # all_ims = list(sorted(os.listdir(path)))
     files = (file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)))
     all_ims = list(sorted(files))  
-
+    print(all_ims)
+    print(path_final)
     img_arr = imread(os.path.join(path,all_ims[0]))
     # print(img_arr.shape)
     d = img_arr.shape[0]

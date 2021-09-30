@@ -163,7 +163,7 @@ def save_prediction_test (loader,model,path,device,img_path):
 
         # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
         loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
-        change_dims_one(path + "/predicted_mask/" +  str(i) + ".tif",x,img_path)
+        change_dims_one(path + "/" +  str(i) + ".tif",x,img_path)
         del x
     print("Saved Predicted Masks")
 

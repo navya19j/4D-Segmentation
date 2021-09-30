@@ -29,10 +29,11 @@ if __name__ == "__main__":
 
     if (to_track == "Y"):
         root = os.getcwd()
-        dir = input("Enter directory containing masks to be tracked: ")
-        path_bb = os.path.join(root,dir,"bounding_box")
-        path_cbb = os.path.join(root,dir,"complete_bounding_box")
-        path_3d = os.path.join(root,dir,"3D_Box")
+        cellname = input("Enter cellname: ")
+        dir = os.path.join(root,"output",cellname,"predicted_mask")
+        path_bb = os.path.join(dir,"bounding_box")
+        path_cbb = os.path.join(dir,"complete_bounding_box")
+        path_3d = os.path.join(dir,"3D_Box")
 
         if (not os.path.isdir(path_bb)):
             os.mkdir(path_bb)
