@@ -63,7 +63,7 @@ def extract_as_dataframe(MAX_ITER=500):
 #### LOAD DATA
 
 st.sidebar.header("Data")
-filenames = glob.glob("./**/object.txt")
+filenames = glob.glob("./predicted_mask/object.txt")
 fname = st.sidebar.text_input("Select an object file: ", filenames[0])
 
 # NOTE: can load all the items, but the plotting struggles with so many. we need to filter it before hand
@@ -71,7 +71,7 @@ fname = st.sidebar.text_input("Select an object file: ", filenames[0])
 dictionary = load_data(fname)
 
 # MAX_ITEMS_TO_LOAD = st.number_input("Maximum items to load")
-df = extract_as_dataframe(MAX_ITER=len(dictionary))
+df = extract_as_dataframe(MAX_ITER=2000)#len(dictionary))
 
 st.sidebar.write(f"Loaded {len(dictionary)} tracked objects ({len(df)} data points).")
 
