@@ -31,16 +31,21 @@ if __name__ == "__main__":
         root = os.getcwd()
         cellname = input("Enter cellname: ")
         dir = os.path.join(root,"output",cellname,"predicted_mask")
-        path_bb = os.path.join(dir,"bounding_box")
-        path_cbb = os.path.join(dir,"complete_bounding_box")
-        path_3d = os.path.join(dir,"3D_Box")
 
-        if (not os.path.isdir(path_bb)):
-            os.mkdir(path_bb)
-        if (not os.path.isdir(path_cbb)):
-            os.mkdir(path_cbb)
-        if (not os.path.isdir(path_3d)):
-            os.mkdir(path_3d)
+        os.makedirs(os.path.join(dir,"bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(dir,"complete_bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
+
+        # path_bb = os.path.join(dir,"bounding_box")
+        # path_cbb = os.path.join(dir,"complete_bounding_box")
+        # path_3d = os.path.join(dir,"3D_Box")
+
+        # if (not os.path.isdir(path_bb)):
+        #     os.mkdir(path_bb)
+        # if (not os.path.isdir(path_cbb)):
+        #     os.mkdir(path_cbb)
+        # if (not os.path.isdir(path_3d)):
+        #     os.mkdir(path_3d)
 
         # print("Generating Bounding Boxes")
         # call(["python", "boundary_box.py","--dir",dir])

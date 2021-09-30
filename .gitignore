@@ -12,3 +12,4 @@ Data/**/*.tif
 predicted_mask_test/*
 Labeled/*
 Data/*
+output/*

@@ -209,6 +209,10 @@ def change_dims_one(path1,img,img_path):
 
     imsave(path1,mask_array)
     del mask_array
+    del x_im
+    del x
+    del temp
+    del org_image
 
 
 # change this 

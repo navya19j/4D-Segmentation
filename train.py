@@ -112,16 +112,18 @@ def main():
     one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
     img_path = os.path.join(path,data,cellname,one_img)
     
-    output_dir = os.path.join(root,"output")
-    if (not os.path.isdir(output_dir)):
-        os.mkdir(output_dir)
-    cell_dir = os.path.join(output_dir,cellname)
-    if (not os.path.isdir(cell_dir)):
-        os.mkdir(cell_dir)
-    pred_mask = os.path.join(cell_dir,"predicted_mask")
-    if (not os.path.isdir(pred_mask)):
-        os.mkdir(pred_mask)
-
+    # output_dir = os.path.join(root,"output")
+    # if (not os.path.isdir(output_dir)):
+    #     os.mkdir(output_dir)
+    # cell_dir = os.path.join(output_dir,cellname)
+    # if (not os.path.isdir(cell_dir)):
+    #     os.mkdir(cell_dir)
+    # pred_mask = os.path.join(cell_dir,"predicted_mask")
+    # if (not os.path.isdir(pred_mask)):
+    #     os.mkdir(pred_mask)
+    
+    pred_mask = os.path.join(root, "output", cellname, "predicted_mask")
+    os.makedirs(pred_mask, exist_ok=True)
     
     print("Test Trends: ")
     print("Dice: ")
