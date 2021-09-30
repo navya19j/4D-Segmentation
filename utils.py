@@ -120,8 +120,12 @@ def save_prediction (loader,model,path,device,img_path):
     model.eval()
     i = 0
     loop = tqdm(loader)
+
+    dir_path = img_path[0:img_path.rfind("/")]
+    all_ims = list(sorted(os.listdir(dir_path)))
+
     for batch_idx, (x,y) in enumerate(loop):
-        i+=1
+        
         x = x.float().to(device)
         n_c = x.shape[2]
         y = y.float().to(device)
@@ -135,8 +139,15 @@ def save_prediction (loader,model,path,device,img_path):
         y = y.squeeze(0)
         y = y.squeeze(0)
         y = y*255.0
-
-        change_dims_one(path + "/" +  str(i) + ".tif",x,img_path)
+        try:
+            name = all_ims[i]
+        except:
+            name = i+".tif"
+        change_dims_one(path + "/" +  all_ims[i],x,img_path)
+        i+=1
+        del x
+        del y
+        
     print("Saved Predicted Masks")
 
     model.train()
@@ -148,8 +159,11 @@ def save_prediction_test (loader,model,path,device,img_path):
     i = 0
 
     loop = tqdm(loader)
+    dir_path = img_path[0:img_path.rfind("/")]
+    all_ims = list(sorted(os.listdir(dir_path)))
+
     for batch_idx, x in enumerate(loop):
-        i+=1
+
         loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
         x = x.float().to(device)
         n_c = x.shape[2]
@@ -163,8 +177,14 @@ def save_prediction_test (loader,model,path,device,img_path):
 
         # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
         loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
-        change_dims_one(path + "/" +  str(i) + ".tif",x,img_path)
+        try:
+            name = all_ims[i]
+        except:
+            name = i+".tif"
+        change_dims_one(path + "/" +  name,x,img_path)
+        i+=1
         del x
+        
     print("Saved Predicted Masks")
 
     model.train()
@@ -213,7 +233,6 @@ def change_dims_one(path1,img,img_path):
     del x
     del temp
     del org_image
-
 
 # change this 
 
