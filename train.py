@@ -111,8 +111,18 @@ def main():
     root = os.getcwd()
     one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
     img_path = os.path.join(path,data,cellname,one_img)
+    
+    output_dir = os.path.join(root,"output")
+    if (not os.path.isdir(output_dir)):
+        os.mkdir(output_dir)
+    cell_dir = os.path.join(output_dir,cellname)
+    if (not os.path.isdir(cell_dir)):
+        os.mkdir(cell_dir)
+    pred_mask = os.path.join(cell_dir,"predicted_mask")
+    if (not os.path.isdir(pred_mask)):
+        os.mkdir(pred_mask)
 
-    save_prediction (test_loader,model,path,device,img_path) 
+    
     print("Test Trends: ")
     print("Dice: ")
     print(dice_test)
@@ -129,8 +139,8 @@ def main():
     print("Loss: ")
     print(loss_train)
 
-    print("Saving")
-    save_prediction (test_loader,model,path,device) 
+    print("Saving Test Predictions")
+    save_prediction (test_loader,model,pred_mask,device,img_path) 
     print("Saved")        
 
 

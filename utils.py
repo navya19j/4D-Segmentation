@@ -136,7 +136,7 @@ def save_prediction (loader,model,path,device,img_path):
         y = y.squeeze(0)
         y = y*255.0
 
-        change_dims_one(path + "/predicted_mask/" + str(i) + ".tif",x,img_path)
+        change_dims_one(path + "/" +  str(i) + ".tif",x,img_path)
     print("Saved Predicted Masks")
 
     model.train()
