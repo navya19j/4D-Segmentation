@@ -15,7 +15,13 @@ def main():
     path = os.getcwd()
     data = input("Enter name of directory containing Data: ")
     cellname = input("Enter name of cell: ")
-    pred_mask = os.path.join(path,"predicted_mask")
+    output_dir = os.path.join(path,"output")
+    if (not os.path.isdir(output_dir)):
+        os.mkdir(output_dir)
+    cell_dir = os.path.join(output_dir,cellname)
+    if (not os.path.isdir(cell_dir)):
+        os.mkdir(cell_dir)
+    pred_mask = os.path.join(cell_dir,"predicted_mask")
     if (not os.path.isdir(pred_mask)):
         os.mkdir(pred_mask)
 
@@ -36,7 +42,7 @@ def main():
     print(f"Loaded {len(test_loader)} test images from {os.path.join(path, data, cellname)}.")
     print(f"Loaded checkpoint: {checkpt} on {device} device.")
     
-    save_prediction_test(test_loader,model,path,device,img_path) 
+    save_prediction_test(test_loader,model,pred_mask,device,img_path) 
 
 if __name__ == "__main__":
     main()
