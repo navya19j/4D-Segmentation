@@ -1,6 +1,6 @@
 from numpy.core.fromnumeric import size
 import torch
-# import torchvision
+import torchvision
 import os
 from tqdm import tqdm
 import torch.optim as optimizer
@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image, ImageSequence
 import sys
 from tifffile import imsave
-# import torchvision.transforms as TF_v
+import torchvision.transforms as TF_v
 torch.set_printoptions(profile="full")
 from dataset_test import *
 # import torchio as tio
