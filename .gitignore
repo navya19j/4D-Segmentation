@@ -10,3 +10,5 @@ model_test.py
 predicted_mask/*
 Data/**/*.tif
 predicted_mask_test/*
+Labeled/*
+Data/*
