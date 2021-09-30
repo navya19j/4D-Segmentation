@@ -15,8 +15,10 @@ def run(predictions):
     start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
     final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
+    print(f"Tracking across z-direction")
+
     loop = tqdm(list(os.listdir(start_directory)))
-    for i,files in enumerate(loop):
+    for idx,files in enumerate(loop):
 
         file_path = os.path.join(start_directory,files)
 
@@ -29,9 +31,9 @@ def run(predictions):
         start = list(temp.keys())[0]
         tracked = temp[start]
         n = 0
-
         for i in temp:
             n+=1
+            loop.set_description(f"Image {idx+1}: Tracking at Depth z={i}/{max(temp)}")
             tracked = assign_detection_to_tracker(tracked,temp[i],0.2,[])
 
         output = {0:[]}
