@@ -2,7 +2,7 @@
 
 from subprocess import call
 import os
-
+import shutil
 import boundary_box
 import sort
 import newcoord
@@ -36,33 +36,16 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(dir,"complete_bounding_box"), exist_ok=True)
         os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
 
-        # path_bb = os.path.join(dir,"bounding_box")
-        # path_cbb = os.path.join(dir,"complete_bounding_box")
-        # path_3d = os.path.join(dir,"3D_Box")
-
-        # if (not os.path.isdir(path_bb)):
-        #     os.mkdir(path_bb)
-        # if (not os.path.isdir(path_cbb)):
-        #     os.mkdir(path_cbb)
-        # if (not os.path.isdir(path_3d)):
-        #     os.mkdir(path_3d)
-
-        # print("Generating Bounding Boxes")
-        # call(["python", "boundary_box.py","--dir",dir])
-        # print("Tracking across z-direction")
-        # call(["python", "sort.py","--dir",dir])
-        # print("Generating 3D bounding Boxes")
-        # call(["python", "newcoord.py","--dir",dir])
-        # print("Tracking across time")
-        # call(["python", "track.py","--dir",dir])
-        
         boundary_box.create_bound_box(dir)
         sort.run(dir)
         newcoord.run(dir)
         track.run(dir)
+
+        shutil.rmtree(os.path.join(dir,"bounding_box"))
+        shutil.rmtree(os.path.join(dir,"complete_bounding_box"))
+        shutil.rmtree(os.path.join(dir,"3D_Box"))
         
         print("Saved final trajectory in object.txt and track.txt")
 
+
         # add visualisation here
-
-
