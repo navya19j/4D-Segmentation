@@ -21,14 +21,16 @@ def create_bound_box(predictions):
     # print(img_arr.shape)
     d = img_arr.shape[0]
 
+    print(f"Generating 2D Bounding Boxes for {len(all_ims)} images from {path}")
+    
     loop = tqdm(all_ims)
-    for i,img in enumerate(loop):
+    for idx,img in enumerate(loop):
     
         final_arr = []
         bounding_coord = {}
         
         for i in range (0,d):
-
+            loop.set_description(f"Image {idx+1}: Depth {i+1}/{d}")
             new_im = imread(os.path.join(path,img),key = i)
             new_im = np.array(new_im)
             w = new_im.shape[0]
