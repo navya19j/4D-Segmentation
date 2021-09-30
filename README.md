@@ -50,11 +50,13 @@ $ python3 train.py
 ### Test
 
 To test the segmentation model on a custom dataset:
-Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
+
 
 ```
 $ python3 test.py
 ```
+
+Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
 
 ### Track
 Multi-stage pipeline
