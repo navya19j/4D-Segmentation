@@ -104,6 +104,8 @@ sort.py - finding box of maximum overlap i.e. finding a 3D bounding box for endo
 
 newcoord.py - getting the 3D box coordinates for all 3D bounding boxes
 
+threshold.py - thresholds the grayscale segmented masks.
+
 tracker.py - contains the class for tracker algorithm
 
 track.py - tracking endosomes using linear assignment
