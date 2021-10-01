@@ -43,7 +43,8 @@ def main():
     print(f"Loaded {len(test_loader)} test images from {os.path.join(path, data, cellname)}.")
     print(f"Loaded checkpoint: {checkpt} on {device} device.")
     
-    save_prediction_test(test_loader,model,pred_mask,device,img_path) 
+    save_prediction_test(test_loader,model,pred_mask,device,img_path)
+    threshold.run(pred_mask) 
 
 if __name__ == "__main__":
     main()
