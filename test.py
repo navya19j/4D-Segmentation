@@ -25,7 +25,7 @@ def main():
     # if (not os.path.isdir(pred_mask)):
     #     os.mkdir(pred_mask)
     pred_mask = os.makedirs(os.path.join(path, "output", cellname, "predicted_mask"), exist_ok=True)
-
+    pred_path = os.path.join(path, "output", cellname, "predicted_mask")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # learning_rate = 1e-4
@@ -43,8 +43,8 @@ def main():
     print(f"Loaded {len(test_loader)} test images from {os.path.join(path, data, cellname)}.")
     print(f"Loaded checkpoint: {checkpt} on {device} device.")
     
-    save_prediction_test(test_loader,model,pred_mask,device,img_path)
-    threshold.run(pred_mask) 
+    save_prediction_test(test_loader,model,pred_path,device,img_path)
+    threshold.run(pred_path) 
 
 if __name__ == "__main__":
     main()
