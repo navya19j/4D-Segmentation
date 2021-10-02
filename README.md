@@ -122,11 +122,5 @@ track.py - tracking endosomes using linear assignment
 
 - object.txt - contains the map from object identifiers to the coordinates of the bounding box of that object with time frame.
 
-- _3Dboxes.txt - 3D coordinates (output of newcoord.py)
-
-- _bb.txt - frame wise bounding coordinates (output of boundary_box.py)
-
-- _track.txt - tracked pairs of boxes (i,i+1 : output of dsort.py)
-
 ## Citation
 TODO
