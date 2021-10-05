@@ -6,6 +6,7 @@ from tifffile.tifffile import imread
 import time
 import glob
 
+from viz_utils import *
 
 ######### VISUALISING RAW IMAGE, LABELS and PREDICTIONS
 
@@ -16,31 +17,6 @@ st.title("4D Segmentation Visualisation")
 # load images for raw, label, predicted
 # match up with image data
 
-@st.cache
-def load_img_as_np_array(path):
-    """Load a multidimensional tiff image as np array"""
-    img_array = []
-    
-    img = imread(path)
-    d = img.shape[0]
-
-    for i in range (0,d):
-        m_new = imread(path,key=i)
-        img_array.append(np.array(m_new, dtype=np.float32))
-
-    # normalise img
-    k = np.amax(img_array)
-    img_array = np.array(img_array)
-    img_array = (img_array)/float(k)
-    return img_array
-
-@st.cache
-def load_images(imgs, masks, preds, t_idx):
-    img = load_img_as_np_array(imgs[t_idx])
-    mask = load_img_as_np_array(masks[t_idx])
-    pred = load_img_as_np_array(preds[t_idx])
-
-    return img, mask, pred
 
 
 img_folder = st.text_input("Select the raw image directory", "Data/cell02_APPL1_GFP/")
