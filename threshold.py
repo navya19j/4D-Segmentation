@@ -33,18 +33,16 @@ def run(predictions):
             new_im = np.array(im)
             new_im = new_im.astype("uint8")
 
-            if (np.amax(new_im)!=np.amin(new_im)):
-                thresh = threshold_otsu(new_im)
-                img_otsu = new_im < thresh
-                res = get_filter(new_im,img_otsu)
-            else:
-                res = new_im
+            thresh = threshold_otsu(new_im)
+            img_otsu = new_im > thresh
+            res = get_filter(new_im,img_otsu)
+
             final_arr.append(res)
 
         final_arr = np.array(final_arr)
         final_arr = final_arr.astype("float32")
 
-        imsave(path+"/"+img,final_arr)
+        imsave(path+"/threshold/"+img,final_arr)
         del final_arr
 
 if __name__ == '__main__':

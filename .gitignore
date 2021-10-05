@@ -13,3 +13,5 @@ predicted_mask_test/*
 Labeled/*
 Data/*
 output/*
+test_data/*
+Predicted/*
