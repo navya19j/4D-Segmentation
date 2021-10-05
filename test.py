@@ -16,25 +16,16 @@ def main():
     path = os.getcwd()
     data = input("Enter name of directory containing Data: ")
     cellname = input("Enter name of cell: ")
-    # output_dir = os.path.join(path,"output")
-    # if (not os.path.isdir(output_dir)):
-    #     os.mkdir(output_dir)
-    # cell_dir = os.path.join(output_dir,cellname)
-    # if (not os.path.isdir(cell_dir)):
-    #     os.mkdir(cell_dir)
-    # pred_mask = os.path.join(cell_dir,"predicted_mask")
-    # if (not os.path.isdir(pred_mask)):
-    #     os.mkdir(pred_mask)
+
     pred_mask = os.makedirs(os.path.join(path, "output", cellname, "predicted_mask"), exist_ok=True)
     pred_path = os.path.join(path, "output", cellname, "predicted_mask")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    # learning_rate = 1e-4
+
     # Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
     test_loader = get_loaders_test(path,data,cellname)
     model = UNet(in_channels=1,out_channels=1)
     model.to(device)
-    # loss_fn = nn.BCEWithLogitsLoss()
 
     checkpt = input("Enter name of the model tar file: ")
     load_checkpoint_test(torch.load(checkpt, map_location=device), model)

@@ -16,14 +16,12 @@ if __name__ == "__main__":
 
     if (to_train == "Y"):
         train.main()
-        # call(["python", "train.py"])
 
     to_test = input("Do you wish to test on new images? (Y/N)")
 
     if (to_test == "Y"):
 
         test.main()
-        # call(["python", "test.py"])
 
     to_track = input("Do you wish to track the segmented images? (Y/N)?")
 
