@@ -8,6 +8,16 @@ from skimage.filters import threshold_otsu
 from tifffile import *
 from PIL import Image
 
+def apply_threshold(img):
+    """Applies ostu thresholding for converting to binary image """
+    
+    img = img.astype(np.uint8)
+    thresh = threshold_otsu(img)
+    img_otsu = img > thresh
+    threshold_img = img * img_otsu
+    return threshold_img
+
+
 def get_filter(image,mask):
     f = image*mask
     return f

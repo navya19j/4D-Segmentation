@@ -15,6 +15,7 @@ dependencies:
   - tifffile
   - plotly 
   - scikit-image
+  - pytest
   - pip
   - pip:
     - streamlit
