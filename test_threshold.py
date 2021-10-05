@@ -13,6 +13,7 @@ def test_threshold_is_correct_shape():
     threshold_img = apply_threshold(img)
 
     assert img.shape == threshold_img.shape
+    assert threshold_img.dtype == np.uint8
 
     
 def test_threshold_is_correct():
