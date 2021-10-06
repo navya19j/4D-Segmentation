@@ -10,7 +10,6 @@ TODO: add an image here showing the output
 
 1. Install Anaconda (https://docs.anaconda.com/anaconda/install/index.html)
 
-
 2. Create the 4d_segmentation environment
 ```
 $ conda env create --file=environment.yml
@@ -55,6 +54,8 @@ To test the segmentation model on a custom dataset:
 ```
 $ python3 test.py
 ```
+
+TODO: add a note about thresholding
 
 Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
 

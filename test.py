@@ -1,16 +1,13 @@
 #increase dimension of training mask at 1
-import torch
-import torch.nn as nn
-from torch.nn.modules import loss
-import torch.optim as optim
-import torch.nn.functional as F
 import os
+
+import torch
+
 import threshold
-from tqdm import tqdm
-import torch.optim as optimizer
-from unet import *
 from dataset_test import *
+from unet import *
 from utils import *
+
 
 def main():
     path = os.getcwd()

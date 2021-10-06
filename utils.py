@@ -1,21 +1,19 @@
-from numpy.core.fromnumeric import size
-import torch
-import torchvision
 import os
-from tqdm import tqdm
-import torch.optim as optimizer
-from unet import *
-from dataset import *
+
 import numpy as np
+import torch
+from numpy.core.fromnumeric import size
 from PIL import Image, ImageSequence
-import sys
 from tifffile import imsave
-import torchvision.transforms as TF_v
+from tqdm import tqdm
+
+from dataset import *
+from unet import *
+
 torch.set_printoptions(profile="full")
 from dataset_test import *
-# import torchio as tio
 
-test = []
+# test = []
 
 def get_loaders(path,data,label,cellname):
     
@@ -113,7 +111,7 @@ def check_accuracy(loader,model,device,loss_func):
     print(loss_f/(len(loader)))
 
     return (iou_net/(len(loader)),dice_score/(len(loader)),loss_f/(len(loader)))
-    model.train()
+    # model.train()
 
 def save_prediction (loader,model,path,device,img_path):
 
