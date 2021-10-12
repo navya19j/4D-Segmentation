@@ -33,11 +33,11 @@ def load_images(imgs, masks, preds, t_idx):
 
 
 
-def draw_bounding_boxes(df, img_bbox, idx):
+def draw_bounding_boxes(df, img_bbox, z_idx):
     
-    df_img = df[df["z"] == idx]
+    df_img = df[df["z"] == z_idx]
 
-    im = Image.fromarray(img_bbox[:, :, idx])
+    im = Image.fromarray(img_bbox[:, :, z_idx])
     im = im.convert("RGB")
 
     draw = ImageDraw.Draw(im)
@@ -55,8 +55,6 @@ def draw_bounding_boxes(df, img_bbox, idx):
         if id not in disp_ids:
             draw.text((x, y-20), text=f"id: {id}", fill="white") 
             disp_ids.append(id)
-
-    # TODO: double check how the boxes are defined? assume, x0, y0
 
     img_bbox = np.array(im)
     return img_bbox
