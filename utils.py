@@ -224,7 +224,7 @@ def change_dims_one(path1,img,img_path):
     
     # mask_array = np.where(mask_array > 0, 1, 0)
     # mask_array = mask_array*255
-
+    mask_array = np.array(mask_array,dtype=np.float32)
     imsave(path1,mask_array)
     del mask_array
     del x_im
