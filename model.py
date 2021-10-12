@@ -33,8 +33,10 @@ class SegmentationModel(object):
 
 
     def pre_process(self, img: torch.Tensor) -> torch.Tensor:
-        # img is tensor
-        img_t = img.float().to(self.device)
+        # img is tensor? maybe not
+        
+        img_t = torch.Tensor(img).float().to(self.device)
+        img_t = img_t.unsqueeze(0) # add batch dim
 
         return img_t
 
@@ -45,7 +47,7 @@ class SegmentationModel(object):
         output = torch.sigmoid(self.model(img_t)).detach()
         
         output = output.squeeze(0).squeeze(0)
-        output (output > 0.5).float()
+        output = (output > 0.5).float()
         mask = output*255.0 
 
         return mask
