@@ -13,7 +13,7 @@ def apply_threshold(img):
     
     img = img.astype(np.uint8)
     thresh = threshold_otsu(img)
-    img_otsu = img > thresh
+    img_otsu = img < thresh
     threshold_img = img * img_otsu
     return threshold_img
 
