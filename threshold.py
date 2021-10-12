@@ -46,7 +46,7 @@ def run(predictions):
 #             if else loop is needed for cases where no endosome is segmented (single color image) - otw error in threshold_otsu
             if (np.amax(new_im)!=np.amin(new_im)):
                 thresh = threshold_otsu(new_im)
-                img_otsu = new_im > thresh
+                img_otsu = new_im < thresh
                 res = get_filter(new_im,img_otsu)
             else:
                 res = new_im
