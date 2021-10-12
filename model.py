@@ -2,12 +2,12 @@
 
 from unet import UNet
 import torch
-
+from typing import *
 
 class SegmentationModel(object):
 
 
-    def __init__(self, checkpoint=None, mode="train") -> None:
+    def __init__(self, checkpoint: str = None, mode: str = "train") -> None:
         super().__init__()
 
         self.mode = mode
@@ -16,7 +16,7 @@ class SegmentationModel(object):
         self.load_model(checkpoint=checkpoint)
         # TODO: inference transforms?
 
-    def load_model(self, checkpoint):
+    def load_model(self, checkpoint: Optional[str]) -> None:
 
         self.model = UNet(in_channels=1,out_channels=1)
         self.model.to(self.device)
@@ -32,13 +32,13 @@ class SegmentationModel(object):
                 self.model.train()
 
 
-    def pre_process(self, img):
+    def pre_process(self, img: torch.Tensor) -> torch.Tensor:
         # img is tensor
         img_t = img.float().to(self.device)
 
         return img_t
 
-    def inference(self, img):
+    def inference(self, img: torch.Tensor) -> torch.Tensor:
         
         img_t = self.pre_process(img)
 
@@ -46,7 +46,7 @@ class SegmentationModel(object):
         
         output = output.squeeze(0).squeeze(0)
         output (output > 0.5).float()
-        mask = output*255.0
+        mask = output*255.0 
 
         return mask
 
@@ -54,3 +54,7 @@ class SegmentationModel(object):
 if __name__ == "__main__":
 
     model = SegmentationModel(checkpoint="checkpoint_train.pth.tar", mode="train")
+
+
+
+    # size: 128, 128

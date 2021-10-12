@@ -16,6 +16,7 @@ dependencies:
   - plotly 
   - scikit-image
   - pytest
+  - mypy
   - pip
   - pip:
     - streamlit
