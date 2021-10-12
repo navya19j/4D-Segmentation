@@ -4,7 +4,7 @@ This repository contains the code for automatically segmenting and tracking endo
 
 TODO: check the correct wording on this
 
-TODO: add an image here showing the output
+![4D Endosome Segmentation](doc/img/4d_segmentation.gif)
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ $ conda env create --file=environment.yml
 $ conda activate 4d_segmentation
 ```
 
-4. (Optional) Download the pre-trained weights from here: [TODO: Add Link]()
+4. (Optional) Download the pre-trained weights from here: [Google Drive](https://drive.google.com/file/d/1t8V405peURVxjs-JG6N7L6nbR9Mi6H7d/view?usp=sharing)
 5. (Optional) Download the sample dataset [TODO: Add Link]()
 
 You are now ready to run the segmentation and tracking pipeline.
