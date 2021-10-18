@@ -13,7 +13,7 @@ def apply_threshold(img):
     
     img = img.astype(np.uint8)
     thresh = threshold_otsu(img)
-    img_otsu = img > thresh
+    img_otsu = img < thresh
     threshold_img = img * img_otsu
     return threshold_img
 
@@ -46,7 +46,7 @@ def run(predictions):
 #             if else loop is needed for cases where no endosome is segmented (single color image) - otw error in threshold_otsu
             if (np.amax(new_im)!=np.amin(new_im)):
                 thresh = threshold_otsu(new_im)
-                img_otsu = new_im > thresh
+                img_otsu = new_im < thresh
                 res = get_filter(new_im,img_otsu)
             else:
                 res = new_im
