@@ -22,7 +22,7 @@ $ conda activate 4d_segmentation
 ```
 
 4. (Optional) Download the pre-trained weights from here: [Google Drive](https://drive.google.com/file/d/1t8V405peURVxjs-JG6N7L6nbR9Mi6H7d/view?usp=sharing)
-5. (Optional) Download the sample dataset [TODO: Add Link]()
+5. (Optional) Download the sample dataset [Google Drive](https://drive.google.com/file/d/1LfjeXSPr-iYLuYKrL6f9i0d8IfX_s_ET/view?usp=sharing)
 
 You are now ready to run the segmentation and tracking pipeline.
 
