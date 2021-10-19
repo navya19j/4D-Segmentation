@@ -1,6 +1,6 @@
 # 4D Segmentation
 
-This repository contains the code for automatically segmenting and tracking endosomes in a $TYPE_OF_CELL cell using $TYPE_OF_IMAGING imaging.
+This repository contains the code for automated segmentation and tracking of endosomes in a living cells acquired using LLSM.
 
 TODO: check the correct wording on this
 
