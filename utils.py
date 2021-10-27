@@ -157,11 +157,12 @@ def save_prediction_test (loader,model,path,device,img_path):
     i = 0
 
     loop = tqdm(loader)
-    dir_path = img_path[0:img_path.rfind("/")]
+    #dir_path = img_path[0:img_path.rfind("/")]
+    dir_path = os.path.dirname(img_path)
+
     all_ims = list(sorted(os.listdir(dir_path)))
 
     for batch_idx, x in enumerate(loop):
-
         loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
         x = x.float().to(device)
         n_c = x.shape[2]
@@ -178,7 +179,7 @@ def save_prediction_test (loader,model,path,device,img_path):
         try:
             name = all_ims[i]
         except:
-            name = i+".tif"
+            name = i+".tif" # TODO : dont not assume .tif it can be .tiff
         change_dims_one(path + "/" +  name,x,img_path)
         i+=1
         del x
