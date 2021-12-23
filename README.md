@@ -57,8 +57,8 @@ If Train == "Y":
     $ If you want to split dataset into train and test Y otherwise N
     $ If you want to "not" reduce the size of images to 128 to train the model set Y otherwise N (recommended : N)
     $ Number of Epochs
-    $ If train on the pretrained model Y otherwise N
-    $ Name of Trained model (If no pre-trained model, set to None)
+    $ If train further on the pretrained model Y otherwise N
+    $ Name of Pre-Trained model (If no pre-trained model, set to None)
     ```
 
 If Test == "Y":
