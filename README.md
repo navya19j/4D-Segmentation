@@ -35,7 +35,55 @@ To run the entire pipeline:
 ```
 $ python3 main.py
 ```
-and follow the prompts
+
+and create following .txt files :-
+
+- main_input.txt :
+    ```
+    $If you need to train the model Y otherwise N
+    $If you need to test the model Y otherwise N
+    $If you need to track the segmented data Y otherwise N
+
+    ```
+
+If Train == "Y":
+
+- train_input.txt
+    ```
+    $Number of Layers
+    $Parent directory containing data images
+    $Parent directory containing ground truth masks
+    $Name of cell directory containing images in both parent directory
+    $If you want to split dataset into train and test Y otherwise N
+    $If you want to "not" reduce the size of images to 128 set Y otherwise N (keep default : N)
+    $Number of Epochs
+    $If train on the pretrained model Y otherwise N
+    $Name of Trained model (If no pre-trained model, set to None)
+
+    ```
+
+If Test == "Y":
+
+- test_input.txt
+    ```
+    $Name of directory containing Data files
+    $Name of cell directory containing images
+    $If you want to "not" reduce the size of images to 128 set Y otherwise N (keep default : N)
+    $Number of Layers in the UNET model
+    $Name of Trained model
+
+    ```
+
+If Track == "Y":
+
+- train_input.txt
+    ```
+    $Name of cell directory containing images
+    $Minimum Area of bounding box per slice
+    $Minimum Volume of bounding box
+
+    ```
+
 
 
 You are also able to run each component individually using the following instructions:  
