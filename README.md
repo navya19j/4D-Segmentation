@@ -55,7 +55,7 @@ If Train == "Y":
     $ Parent directory containing ground truth masks
     $ Name of cell directory containing images in both parent directory
     $ If you want to split dataset into train and test Y otherwise N
-    $ If you want to "not" reduce the size of images to 128 set Y otherwise N (keep default : N)
+    $ If you want to "not" reduce the size of images to 128 to train the model set Y otherwise N (keep default : N)
     $ Number of Epochs
     $ If train on the pretrained model Y otherwise N
     $ Name of Trained model (If no pre-trained model, set to None)
@@ -67,7 +67,7 @@ If Test == "Y":
     ```
     $ Name of directory containing Data files
     $ Name of cell directory containing images
-    $ If you want to "not" reduce the size of images to 128 set Y otherwise N (keep default : N)
+    $ If you want to "not" reduce the size of images to 128 to train the model set Y otherwise N (keep default : N)
     $ Number of Layers in the UNET model
     $ Name of Trained model
 
