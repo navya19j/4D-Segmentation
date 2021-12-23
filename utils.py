@@ -121,7 +121,7 @@ def check_accuracy(loader,model,device,loss_func):
     # print("Loss: ")
     # print(loss_f/(len(loader)))
 
-    return (iou_net/(len(loader)),dice_score/(len(loader)),loss_f/(len(loader)))
+    return (iou_net/(len(loader)),dice_score/(len(loader)))
     # model.train()
 
 def save_prediction (loader,model,path,device,img_path):
