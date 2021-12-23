@@ -60,6 +60,7 @@ def run(predictions):
         final_arr = np.array(final_arr)
         final_arr = final_arr.astype("float32")
 
+        
         imsave(path+"/"+img,final_arr)
         del final_arr
 

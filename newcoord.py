@@ -13,7 +13,7 @@ import ast
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
-def run(predictions):
+def run(predictions,min_vol):
     print(f"Generating 3D Bounding Boxes")
     start_directory_1 = os.path.join(os.getcwd(),predictions,"bounding_box")
     start_directory_2 = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
@@ -57,16 +57,6 @@ def run(predictions):
 
         for i in range (0,d):
             loop.set_description(f"Image {idx+1}: Depth {i+1}/{d}")
-            # new_im = imread(os.path.join(path,img),key = i)
-            # # new_im = imread(path+"/"+img,key = i)
-            # new_im = np.array(new_im)
-            # w = new_im.shape[0]
-            # h = new_im.shape[1]
-            # new_im_n = np.zeros((w,h,1))
-            # new_im_n[:,:,0] = new_im
-            # new_im_n = np.uint8(new_im_n)
-            # res = new_im_n.copy()
-            # res = cv2.cvtColor(res,cv2.COLOR_GRAY2RGB)
             finalbbox[i+1] = []
 
             if (imgbox.get(i+1)!=None):
@@ -108,7 +98,9 @@ def run(predictions):
 
             temp.insert(2,start[i])
             temp.append(depth[i])
-            allbox[0].append(temp)
+            vol = temp[-1]*temp[-2]*temp[-3]
+            if (vol>=int(min_vol)):
+                allbox[0].append(temp)
 
         sample = open(os.path.join(final_directory, files[0:len(files)-4] +"_3Dboxes.txt"),"w")
 

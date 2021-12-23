@@ -15,37 +15,48 @@ from dataset_test import *
 
 # test = []
 
-def get_loaders(path,data,label,cellname):
+def get_loaders(path,data,label,cellname,part,truth,bat_size):
     
-    dataset_all = EndosomeDataset(path,data,label,cellname)
+    dataset_all = EndosomeDataset(path,data,label,cellname,truth)
     torch.manual_seed(5)
 
     indices = torch.randperm(len(dataset_all)).tolist()
-    if (117 in indices):
-        indices.remove(117)
-    if (66 in indices):
-        indices.remove(66)
-    length = len(indices)
-    idx = int(-0.2*length)
-
-    dataset_train = torch.utils.data.Subset(dataset_all, indices[:idx])
-
-    dataset_test = torch.utils.data.Subset(dataset_all, indices[idx:])
-    print("Chosen Test Images: ")
-    print(indices[idx:])
-    test = indices[idx:]
-
-    data_loader_train = torch.utils.data.DataLoader(
-        dataset_train, batch_size=1, num_workers=0, shuffle=True,pin_memory=True)
-
-    data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1,num_workers=0, shuffle=False,pin_memory=True)
-
-    return data_loader_train,data_loader_test
-
-def get_loaders_test(path,data,cellname):
+    # if (117 in indices):
+    #     indices.remove(117)
+    # if (66 in indices):
+    #     indices.remove(66)
     
-    dataset_all = Dataset_Test(path,data,cellname)
+    if (part=="Y"):
+        length = len(indices)
+        idx = int(-0.2*length)
+        # print(idx)
+    
+        dataset_train = torch.utils.data.Subset(dataset_all, indices[:idx])
+
+        dataset_test = torch.utils.data.Subset(dataset_all, indices[idx:])
+        print(f"Chose {-idx} Test Images")
+        # print(indices[idx:])
+        test = indices[idx:]
+
+        data_loader_train = torch.utils.data.DataLoader(
+            dataset_train, batch_size=bat_size, num_workers=0, shuffle=True,pin_memory=True)
+
+        data_loader_test = torch.utils.data.DataLoader(
+            dataset_test, batch_size=bat_size,num_workers=0, shuffle=False,pin_memory=True)
+
+        return data_loader_train,data_loader_test
+    else:
+
+        dataset_train = torch.utils.data.Subset(dataset_all, indices)
+
+        data_loader_train = torch.utils.data.DataLoader(
+            dataset_train, batch_size=bat_size, num_workers=0, shuffle=True,pin_memory=True)
+
+        return data_loader_train
+
+def get_loaders_test(path,data,cellname,truth):
+    
+    dataset_all = Dataset_Test(path,data,cellname,truth)
     data_loader_test = torch.utils.data.DataLoader(
         dataset_all, batch_size=1,num_workers=0, shuffle=False,pin_memory=True)
 
@@ -53,11 +64,11 @@ def get_loaders_test(path,data,cellname):
 
 #SAVE_CHECKPOINT
 def save_checkpoint_train(state, filename = "checkpoint_train.pth.tar"):
-    print("Saving Checkpoint Train")
+    # print("Saving Checkpoint Train")
     torch.save(state,filename)
 
 def save_checkpoint_test(state, filename = "checkpoint_test.pth.tar"):
-    print("Saving Checkpoint Test")
+    # print("Saving Checkpoint Test")
     torch.save(state,filename)
 
 #LOAD_CHECKPOINT
@@ -101,14 +112,14 @@ def check_accuracy(loader,model,device,loss_func):
             dice_c =  ((2*torch.sum(pred*y))/(torch.sum(pred+y) + 1e-7))
             dice_score += dice_c.item()
             
-    print("Length of Loader: ")
-    print(len(loader))
-    print("Intersection over Union: ")
-    print(iou_net/(len(loader)))
-    print("Dice Score: ")
-    print(dice_score/(len(loader)))
-    print("Loss: ")
-    print(loss_f/(len(loader)))
+    # print("Length of Loader: ")
+    # print(len(loader))
+    # print("Intersection over Union: ")
+    # print(iou_net/(len(loader)))
+    # print("Dice Score: ")
+    # print(dice_score/(len(loader)))
+    # print("Loss: ")
+    # print(loss_f/(len(loader)))
 
     return (iou_net/(len(loader)),dice_score/(len(loader)),loss_f/(len(loader)))
     # model.train()
@@ -151,7 +162,7 @@ def save_prediction (loader,model,path,device,img_path):
     model.train()
 
 
-def save_prediction_test (loader,model,path,device,img_path):
+def save_prediction_test (loader,model,path,device,img_path,truth):
 
     model.eval()
     i = 0
@@ -180,7 +191,11 @@ def save_prediction_test (loader,model,path,device,img_path):
             name = all_ims[i]
         except:
             name = i+".tif" # TODO : dont not assume .tif it can be .tiff
-        change_dims_one(path + "/" +  name,x,img_path)
+
+        if (truth=="Y"):
+            change_dims_one_act(path + "/" +  name,x,img_path)
+        else:
+            change_dims_one(path + "/" +  name,x,img_path)
         i+=1
         del x
         
@@ -195,6 +210,39 @@ def get_start(x,max_val):
         return start
     else:
         return start+1
+
+def change_dims_one_act(path1,img,img_path):
+
+    mask_predicted = img.cpu().detach().numpy()
+
+    # img = Image.open(img_path)
+    # org_image = []
+    # for i in range (0,img.n_frames):
+    #     res = img.seek(i)
+    #     org_image.append(np.array(img,dtype=np.float32))
+    # org_image = np.array(org_image,dtype=np.float32)
+
+    # d = org_image.shape[0]
+    # w = org_image.shape[1]
+    # h = org_image.shape[2]
+
+    # mask_array = np.zeros([d,w,h])
+
+    # max_dim = max(max(h,w),d)
+
+    # for i in range (0,d):
+    #     temp = mask_predicted[i]
+    #     x = cv2.resize(temp, (max_dim, max_dim),interpolation = cv2.INTER_CUBIC)
+    #     # x = mask_predicted.resize((608,608),resample =Image.NEAREST)
+    #     x_im = (np.array(x))[get_start(w,max_dim):get_start(w,max_dim)+w,get_start(h,max_dim):get_start(h,max_dim)+h]
+    #     # print(x_im.shape)
+    #     mask_array[i,:,:] = x_im
+    
+    # mask_array = np.where(mask_array > 0, 1, 0)
+    # mask_array = mask_array*255
+    mask_array = np.array(mask_predicted,dtype=np.float32)
+    imsave(path1,mask_array)
+    del mask_array
 
 def change_dims_one(path1,img,img_path):
 

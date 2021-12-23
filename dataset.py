@@ -14,12 +14,13 @@ torch.set_printoptions(profile="full")
 #np.set_printoptions(threshold=np.inf)
 
 class EndosomeDataset(torch.utils.data.Dataset):
-    def __init__(self,root,data,label,cellname):
+    def __init__(self,root,data,label,cellname,truth):
         self.root = root
         # self.transforms = transforms
         self.data = data
         self.cellname = cellname
         self.label = label
+        self.truth = truth
         self.imgs = list(sorted(os.listdir(os.path.join(root,data,cellname))))
         self.masks = list(sorted(os.listdir(os.path.join(root,label,cellname))))
         
@@ -29,11 +30,11 @@ class EndosomeDataset(torch.utils.data.Dataset):
         mask_path = os.path.join(self.root,self.label,self.cellname, self.masks[idx])
         #img = Image.open(img_path)
         #img = Image.open(img_path)
-        img = get_final(img_path,False)
+        img = get_final(img_path,False,self.truth)
     
         d = img.shape[0]
         # print(d)
-        mask = get_final(mask_path,True)
+        mask = get_final(mask_path,True,self.truth)
 
         h_mask,w_mask = mask.shape[1],mask.shape[2]
         # print(h_mask)

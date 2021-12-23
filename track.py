@@ -78,14 +78,16 @@ def run(predicitons):
     img_name = []
     loop = tqdm(list(sorted(os.listdir(start_directory_1))))
     for i,files in enumerate(loop):
-        loop.set_description(f"Loading Tracking Data {i+1}/{len(loop)}")
-
-        file = open(os.path.join(start_directory_1,files),"r")
-        contents = file.read()
-        T0 = ast.literal_eval(contents)
-        all_box.append(T0)
-        img_name.append(files[0:len(files)-12]+".tif")
-        file.close()
+        try:
+            loop.set_description(f"Loading Tracking Data {i+1}/{len(loop)}")
+            file = open(os.path.join(start_directory_1,files),"r")
+            contents = file.read()
+            T0 = ast.literal_eval(contents)
+            all_box.append(T0)
+            img_name.append(files[0:len(files)-12]+".tif")
+            file.close()
+        except:
+            print("Ds")
 
     all_box = [conv_dict_to_class(i) for i in all_box]
 
@@ -132,5 +134,5 @@ def run(predicitons):
 
 if __name__ == "__main__":
     # predictions = input("Enter directory containing masks to be tracked: ")
-    run(sys.argv[2])
+    run("output/cell1/predicted_mask")
 
