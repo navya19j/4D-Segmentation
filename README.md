@@ -86,7 +86,7 @@ If Track == "Y":
 
 
 
-You are also able to run each component individually using the following instructions:  
+<!-- You are also able to run each component individually using the following instructions:  
 ### Train
 
 To train a model on a custom dataset:
@@ -103,7 +103,7 @@ To test the segmentation model on a custom dataset:
 $ python3 test.py
 ```
 
-TODO: add a note about thresholding
+TODO: add a note about thresholding -->
 
 Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
 
