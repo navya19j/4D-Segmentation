@@ -40,9 +40,9 @@ and create following .txt files :-
 
 - main_input.txt :
     ```
-    $If you need to train the model on a custom dataset Y otherwise N
-    $If you need to test the model Y otherwise N
-    $If you need to track the segmented data Y otherwise N
+    $ If you need to train the model on a custom dataset Y otherwise N
+    $ If you need to test the model Y otherwise N
+    $ If you need to track the segmented data Y otherwise N
 
     ```
 
