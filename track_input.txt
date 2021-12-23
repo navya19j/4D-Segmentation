@@ -1,0 +1,3 @@
+cell02_EEA1 TagRFP
+10
+50
