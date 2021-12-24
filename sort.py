@@ -11,7 +11,7 @@ from scipy.optimize import linear_sum_assignment as linear_assignment
 
 # print(dictionary)
 
-def run(predictions):
+def run(predictions,iou_threshold):
     start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
     final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
@@ -35,7 +35,7 @@ def run(predictions):
             for i in temp:
                 n+=1
                 loop.set_description(f"Image {idx+1}: Tracking at Depth z={i}/{max(temp)}")
-                tracked = assign_detection_to_tracker(tracked,temp[i],0.2,[])
+                tracked = assign_detection_to_tracker(tracked,temp[i],iou_threshold,[])
 
             output = {0:[]}
 

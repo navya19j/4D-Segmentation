@@ -42,7 +42,7 @@ def get_loaders(path,data,label,cellname,part,truth,bat_size):
             dataset_train, batch_size=bat_size, num_workers=0, shuffle=True,pin_memory=True)
 
         data_loader_test = torch.utils.data.DataLoader(
-            dataset_test, batch_size=bat_size,num_workers=0, shuffle=False,pin_memory=True)
+            dataset_test, batch_size=1,num_workers=0, shuffle=False,pin_memory=True)
 
         return data_loader_train,data_loader_test
     else:
@@ -63,11 +63,11 @@ def get_loaders_test(path,data,cellname,truth):
     return data_loader_test
 
 #SAVE_CHECKPOINT
-def save_checkpoint_train(state, filename = "checkpoint_train.pth.tar"):
+def save_checkpoint_train(state, filename):
     # print("Saving Checkpoint Train")
     torch.save(state,filename)
 
-def save_checkpoint_test(state, filename = "checkpoint_test.pth.tar"):
+def save_checkpoint_test(state, filename):
     # print("Saving Checkpoint Test")
     torch.save(state,filename)
 
@@ -174,34 +174,33 @@ def save_prediction_test (loader,model,path,device,img_path,truth):
     all_ims = list(sorted(os.listdir(dir_path)))
 
     for batch_idx, x in enumerate(loop):
+
+        loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
+        # print(all_ims[i])
+        x = x.float().to(device)
+        n_c = x.shape[2]
+        with torch.no_grad():
+            x = torch.sigmoid(model(x)).detach()
+        
+        x = x.squeeze(0)
+        x = x.squeeze(0)
+        x = (x>0.5).float()
+        x = x*255.0
+
+        # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
+        loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
         try:
-            loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
-            # print(all_ims[i])
-            x = x.float().to(device)
-            n_c = x.shape[2]
-            with torch.no_grad():
-                x = torch.sigmoid(model(x)).detach()
-            
-            x = x.squeeze(0)
-            x = x.squeeze(0)
-            x = (x>0.5).float()
-            x = x*255.0
-
-            # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
-            loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
-            try:
-                name = all_ims[i]
-            except:
-                name = i+".tif" # TODO : dont not assume .tif it can be .tiff
-
-            if (truth=="Y"):
-                change_dims_one_act(path + "/" +  name,x,img_path)
-            else:
-                change_dims_one(path + "/" +  name,x,img_path)
-            i+=1
-            del x
+            name = all_ims[i]
         except:
-            print(f"Skipped Image - {all_ims[i]}")
+            name = i+".tif" # TODO : dont not assume .tif it can be .tiff
+
+        if (truth=="Y"):
+            change_dims_one_act(path + "/" +  name,x,img_path)
+        else:
+            change_dims_one(path + "/" +  name,x,img_path)
+        i+=1
+        del x
+
         
     print("Saved Predicted Masks")
 

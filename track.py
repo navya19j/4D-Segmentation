@@ -69,12 +69,12 @@ def get_img_path(idx,path):
     return img_id
 
     
-def run(predicitons):
+def run(predicitons,iou_threshold):
 
     start_directory_1 = os.path.join(os.getcwd(),predicitons,"3D_Box")
     all_box = []
 
-    tracker = Tracker()
+    tracker = Tracker(iou_threshold)
     img_name = []
     loop = tqdm(list(sorted(os.listdir(start_directory_1))))
     for i,files in enumerate(loop):

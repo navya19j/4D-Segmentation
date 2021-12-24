@@ -14,7 +14,7 @@ class Tracker:
     # objects contains all current ids and positions of objects being tracked
     # active counter for sequential tracks of each object
 
-    def __init__(self,active_threshold = 0, non_active_threshold = 10, iou_threshold = 0.4):
+    def __init__(self,iou_threshold,active_threshold = 0, non_active_threshold = 10):
         self.next_box_id = 0
         self.objects = OrderedDict()
         self.active = OrderedDict()
@@ -35,7 +35,7 @@ class Tracker:
         del self.lost[object_id]
         del self.active[object_id]
 
-    def assign_detection_to_tracker(self,detections, trackers, iou_threshold = 0.4):
+    def assign_detection_to_tracker(self,detections, trackers, iou_threshold):
 
         iou_matrix = np.zeros((len(detections),len(trackers)))
 

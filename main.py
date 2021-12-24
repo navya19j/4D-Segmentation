@@ -44,7 +44,7 @@ if __name__ == "__main__":
         # min_area = input("Minimum area of Box: ")
         # min_vol = input("Minimum Volume of Box: ")
 
-        cellname,min_area,min_vol = track_inputs[0],int(track_inputs[1]),int(track_inputs[2])
+        cellname,min_area,min_vol,iou_square,iou_cube = track_inputs[0],int(track_inputs[1]),int(track_inputs[2]),int(track_inputs[3]),int(track_inputs[4])
 
         dir = os.path.join(root,"output",cellname,"predicted_mask")
         os.makedirs(os.path.join(dir,"bounding_box"), exist_ok=True)
@@ -52,9 +52,9 @@ if __name__ == "__main__":
         os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
 
         boundary_box.create_bound_box(dir,min_area)
-        sort.run(dir)
+        sort.run(dir,iou_square)
         newcoord.run(dir,min_vol)
-        track.run(dir)
+        track.run(dir,iou_cube)
 
         shutil.rmtree(os.path.join(dir,"bounding_box"))
         shutil.rmtree(os.path.join(dir,"complete_bounding_box"))
