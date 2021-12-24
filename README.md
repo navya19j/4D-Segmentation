@@ -75,7 +75,7 @@ If Test == "Y":
 
 If Track == "Y":
 
-- train_input.txt
+- track_input.txt
     ```
     $ Name of cell directory containing images
     $ Minimum Area of bounding box per slice
