@@ -33,7 +33,7 @@ TODO: check what is the correct wording for this.
 
 To run the entire pipeline:
 ```
-$ python3 main.py main_input train_input test_input
+$ python3 main.py [main_input] [train_input] [test_input] [track_input]
 ```
 
 and create 3 files :-
@@ -75,7 +75,7 @@ If Test == "Y":
 
 If Track == "Y":
 
-- track_input.txt
+- [track_input]
     ```
     $ Name of cell directory containing images
     $ Minimum Area of bounding box per slice
