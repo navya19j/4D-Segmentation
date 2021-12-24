@@ -36,7 +36,9 @@ To run the entire pipeline:
 $ python3 main.py [main_input] [train_input] [test_input] [track_input]
 ```
 
-and create 3 files :-
+and create following files :-
+
+Note : If you do not want to run all components, pass empty files to command line argument
 
 - [main_input] :
     ```
