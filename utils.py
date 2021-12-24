@@ -174,30 +174,33 @@ def save_prediction_test (loader,model,path,device,img_path,truth):
     all_ims = list(sorted(os.listdir(dir_path)))
 
     for batch_idx, x in enumerate(loop):
-        loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
-        x = x.float().to(device)
-        n_c = x.shape[2]
-        with torch.no_grad():
-            x = torch.sigmoid(model(x)).detach()
-        
-        x = x.squeeze(0)
-        x = x.squeeze(0)
-        x = (x>0.5).float()
-        x = x*255.0
-
-        # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
-        loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
         try:
-            name = all_ims[i]
-        except:
-            name = i+".tif" # TODO : dont not assume .tif it can be .tiff
+            loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
+            x = x.float().to(device)
+            n_c = x.shape[2]
+            with torch.no_grad():
+                x = torch.sigmoid(model(x)).detach()
+            
+            x = x.squeeze(0)
+            x = x.squeeze(0)
+            x = (x>0.5).float()
+            x = x*255.0
 
-        if (truth=="Y"):
-            change_dims_one_act(path + "/" +  name,x,img_path)
-        else:
-            change_dims_one(path + "/" +  name,x,img_path)
-        i+=1
-        del x
+            # imsave(path + "/predicted_mask/" +  str(i) + ".tif",x.detach().cpu().numpy())
+            loop.set_description(f"Image {i}/{len(loop)}: Saving Image")
+            try:
+                name = all_ims[i]
+            except:
+                name = i+".tif" # TODO : dont not assume .tif it can be .tiff
+
+            if (truth=="Y"):
+                change_dims_one_act(path + "/" +  name,x,img_path)
+            else:
+                change_dims_one(path + "/" +  name,x,img_path)
+            i+=1
+            del x
+        except:
+            print("Skipped Image")
         
     print("Saved Predicted Masks")
 

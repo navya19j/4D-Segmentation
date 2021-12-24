@@ -72,10 +72,9 @@ def main(train_inputs):
         train_loader,test_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
     else:
         train_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
+        test_loader = train_loader
 
     num_classes = 2
-    
-    
 
     if (transfer == "Y"):
         load_model = True
@@ -98,48 +97,31 @@ def main(train_inputs):
 
         loop.set_description(f"Epoch {epoch+1}/{num_epochs}")
         train_one_epoch(train_loader,model,optimize,loss_fn,scaler,device)
-        try:
-            # print("Epoch No. :" + str(epoch))
+ 
+        x,y = check_accuracy(test_loader,model,device,loss_fn)
+        # print(x)
+        # print(y)
+        a,b = check_accuracy(train_loader,model,device,loss_fn)
 
-            # print("Accuracy on Test: ")
-            x,y = check_accuracy(test_loader,model,device,loss_fn)
-            # dice_test.append(x)
-            # iou_test.append(y)
+        if (y>iou_test or x>dice_test):
+            checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
+            save_checkpoint_train(checkpoint)
+            # print("Saved")
+            checkpoint_test = {"state_dict": model.state_dict()}
+            save_checkpoint_test(checkpoint_test)
+            # print("Saved")
+            loop.set_postfix({'IOU Test':y,'Dice Test':x})
+            iou_test = y
+            dice_test = x
+            iou_train = b
+            dice_train = a
 
-            if (y>iou_test or x>dice_test):
-                checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
-                save_checkpoint_train(checkpoint)
-                # print("Saved")
-                checkpoint_test = {"state_dict": model.state_dict()}
-                save_checkpoint_test(checkpoint_test)
-                # print("Saved")
-                loop.set_postfix({'IOU Test':y,'Dice Test':x})
-                iou_test = y
-                dice_test = x
-        except:
-            print("Error")
-        finally:
-            # print("Accuracy on Train: ")
-            a,b = check_accuracy(train_loader,model,device,loss_fn)
-            dice_train.append(a)
-            iou_train.append(b)
-
-            loop.set_postfix({'IOU Train': b,'Dice Train':a})
+        loop.set_postfix({'IOU Train': b,'Dice Train':a})
 
     root = os.getcwd()
     one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
     img_path = os.path.join(path,data,cellname,one_img)
-    
-    # output_dir = os.path.join(root,"output")
-    # if (not os.path.isdir(output_dir)):
-    #     os.mkdir(output_dir)
-    # cell_dir = os.path.join(output_dir,cellname)
-    # if (not os.path.isdir(cell_dir)):
-    #     os.mkdir(cell_dir)
-    # pred_mask = os.path.join(cell_dir,"predicted_mask")
-    # if (not os.path.isdir(pred_mask)):
-    #     os.mkdir(pred_mask)
-    
+
     pred_mask = os.path.join(root, "output", cellname, "predicted_mask")
     os.makedirs(pred_mask, exist_ok=True)
     
@@ -149,20 +131,13 @@ def main(train_inputs):
         print(dice_test)
         print("IOU: ")
         print(iou_test)
-        print("Loss: ")
-        print(loss_test)
 
     print("Train Trends: ")
     print("Dice: ")
     print(dice_train)
     print("IOU: ")
     print(iou_train)
-    print("Loss: ")
-    print(loss_train)
-
-    # print("Saving Test Predictions")
-    # save_prediction_test(test_loader,model,pred_mask,device,img_path,truth) 
-    # print("Saved")        
+ 
 
 
 if __name__ == "__main__":
