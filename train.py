@@ -1,5 +1,5 @@
 #increase dimension of training mask at 1
-from numpy import fabs
+from numpy import *
 import torch
 import torch.nn as nn
 from torch.nn.modules import loss
@@ -19,8 +19,8 @@ torch.set_printoptions(profile="full")
 
 def train_one_epoch(loader,model,optimizer,loss_func,scaler,device):
 
+    model.train()
     loop = tqdm(loader)
-
     for batch_idx , (x,y) in enumerate(loop):
 
         loop.set_description(f"Loading Batch {batch_idx+1}/{len(loop)}")
@@ -49,17 +49,7 @@ def main(train_inputs):
     if (device=="cuda"):
         torch.cuda.empty_cache()
 
-    # num = int(input("Number of Layers: "))
     num,data,label,cellname,part,truth,bat_size,num_epochs,transfer,trained_model = int(train_inputs[0]),train_inputs[1],train_inputs[2],train_inputs[3],train_inputs[4],train_inputs[5],int(train_inputs[6]),int(train_inputs[7]),train_inputs[8],train_inputs[9]
-    # data = input("Enter parent directory containing data images: ")
-    # label = input("Enter parent directory containing ground truth masks: ")
-    # cellname = input("Enter name of cell directory containing images in both parent directory: ")
-    # part = input("Partition Dataset? (Y/N)")
-    # truth = input("Do you want to test on actual size? (Y/N)")
-    # bat_size = int(input("Batch Size: "))
-    # num_epochs = int(input("Enter Number of Epochs: "))
-    # transfer = input("Do you want to train further on trained data?(Y/N) :")
-    # trained_model = str(input("Trained Model Name: "))
 
     model = UNet(layers=num,in_channels=1,out_channels=1)
     model.to(device)
@@ -68,7 +58,7 @@ def main(train_inputs):
     optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
     path = os.getcwd()
 
-    if (part=="Y"):
+    if (part == "Y"):
         train_loader,test_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
     else:
         train_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
@@ -92,26 +82,31 @@ def main(train_inputs):
 
     epochs = [i for i in range (num_epochs)]
     loop = tqdm(epochs)
+    # print(epochs)
 
     for epoch in loop:
 
         loop.set_description(f"Epoch {epoch+1}/{num_epochs}")
         train_one_epoch(train_loader,model,optimize,loss_fn,scaler,device)
- 
+
+        checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
+        checkpoint_test = {"state_dict": model.state_dict()}
+
         x,y = check_accuracy(test_loader,model,device,loss_fn)
         a,b = check_accuracy(train_loader,model,device,loss_fn)
+        print(x)
+        print(y)
 
-        if (y>iou_test or x>dice_test):
-            checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
-            save_checkpoint_train(checkpoint)
-            checkpoint_test = {"state_dict": model.state_dict()}
-            save_checkpoint_test(checkpoint_test)
-            loop.set_postfix({'IOU Test':y,'Dice Test':x})
+        loop.set_postfix({'IOU Test':y,'Dice Test':x})
+
+        if (y>=iou_test or x>=dice_test):
+            save_checkpoint_train(checkpoint,"checkpoint_best_train.pth.tar")
+            save_checkpoint_test(checkpoint_test,"checkpoint_best_test.pth.tar")
             iou_test = y
             dice_test = x
             iou_train = b
             dice_train = a
-
+            print("Saved")
 
         loop.set_postfix({'IOU Train': b,'Dice Train':a})
 
