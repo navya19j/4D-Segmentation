@@ -6,37 +6,54 @@ import shutil
 import boundary_box
 import sort
 import newcoord
+import sys
 import track
 import test
 import train
 
 if __name__ == "__main__":
 
-    to_train = input("Do you wish to train the model? (Y/N)?")
+    
+
+    with open(sys.argv[1],'r') as main_file:
+        main_inputs = [line.strip() for line in main_file]
+
+    to_train, to_test, to_track = main_inputs[0],main_inputs[1],main_inputs[2]
 
     if (to_train == "Y"):
-        train.main()
+        
+        with open(sys.argv[2], 'r') as file:
+            train_inputs = [line.strip() for line in file]
 
-    to_test = input("Do you wish to test on new images? (Y/N)")
+        train.main(train_inputs)
 
     if (to_test == "Y"):
 
-        test.main()
+        with open(sys.argv[3], 'r') as file:
+            test_inputs = [line.strip() for line in file]
 
-    to_track = input("Do you wish to track the segmented images? (Y/N)?")
+        test.main(test_inputs)
 
     if (to_track == "Y"):
-        root = os.getcwd()
-        cellname = input("Enter cellname: ")
-        dir = os.path.join(root,"output",cellname,"predicted_mask")
 
+        with open(sys.argv[4], 'r') as file:
+            track_inputs = [line.strip() for line in file]
+
+        root = os.getcwd()
+        # cellname = input("Enter cellname: ")
+        # min_area = input("Minimum area of Box: ")
+        # min_vol = input("Minimum Volume of Box: ")
+
+        cellname,min_area,min_vol = track_inputs[0],int(track_inputs[1]),int(track_inputs[2])
+
+        dir = os.path.join(root,"output",cellname,"predicted_mask")
         os.makedirs(os.path.join(dir,"bounding_box"), exist_ok=True)
         os.makedirs(os.path.join(dir,"complete_bounding_box"), exist_ok=True)
         os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
 
-        boundary_box.create_bound_box(dir)
+        boundary_box.create_bound_box(dir,min_area)
         sort.run(dir)
-        newcoord.run(dir)
+        newcoord.run(dir,min_vol)
         track.run(dir)
 
         shutil.rmtree(os.path.join(dir,"bounding_box"))
