@@ -50,7 +50,7 @@ def main(train_inputs):
         torch.cuda.empty_cache()
 
     # num = int(input("Number of Layers: "))
-    num,data,label,cellname,part,truth,bat_size,num_epochs,transfer,trained_model,min_threshold = int(train_inputs[0]),train_inputs[1],train_inputs[2],train_inputs[3],train_inputs[4],train_inputs[5],int(train_inputs[6]),int(train_inputs[7]),train_inputs[8],train_inputs[9],int(train_inputs[10])
+    num,data,label,cellname,part,truth,bat_size,num_epochs,transfer,trained_model = int(train_inputs[0]),train_inputs[1],train_inputs[2],train_inputs[3],train_inputs[4],train_inputs[5],int(train_inputs[6]),int(train_inputs[7]),train_inputs[8],train_inputs[9]
     # data = input("Enter parent directory containing data images: ")
     # label = input("Enter parent directory containing ground truth masks: ")
     # cellname = input("Enter name of cell directory containing images in both parent directory: ")
@@ -101,18 +101,7 @@ def main(train_inputs):
         x,y = check_accuracy(test_loader,model,device,loss_fn)
         a,b = check_accuracy(train_loader,model,device,loss_fn)
 
-        if (epoch>min_threshold):
-            if (y>iou_test or x>dice_test):
-                checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
-                save_checkpoint_train(checkpoint)
-                checkpoint_test = {"state_dict": model.state_dict()}
-                save_checkpoint_test(checkpoint_test)
-                loop.set_postfix({'IOU Test':y,'Dice Test':x})
-                iou_test = y
-                dice_test = x
-                iou_train = b
-                dice_train = a
-        else:
+        if (y>iou_test or x>dice_test):
             checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
             save_checkpoint_train(checkpoint)
             checkpoint_test = {"state_dict": model.state_dict()}
