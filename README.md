@@ -38,7 +38,7 @@ $ python3 main.py [main_input] [train_input] [test_input] [track_input]
 
 and create following files :-
 
-Note : If you do not want to run all components, pass empty files to command line argument
+Note : If you do not want to run all components, pass empty files to command line argument corresponding to the components you do not want to run
 
 - [main_input] :
     ```
