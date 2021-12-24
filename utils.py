@@ -176,6 +176,7 @@ def save_prediction_test (loader,model,path,device,img_path,truth):
     for batch_idx, x in enumerate(loop):
         try:
             loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
+            # print(all_ims[i])
             x = x.float().to(device)
             n_c = x.shape[2]
             with torch.no_grad():
@@ -200,7 +201,7 @@ def save_prediction_test (loader,model,path,device,img_path,truth):
             i+=1
             del x
         except:
-            print("Skipped Image")
+            print(f"Skipped Image - {all_ims[i]}")
         
     print("Saved Predicted Masks")
 
