@@ -33,12 +33,12 @@ TODO: check what is the correct wording for this.
 
 To run the entire pipeline:
 ```
-$ python3 main.py
+$ python3 main.py main_input train_input test_input
 ```
 
-and create following .txt files :-
+and create 3 files :-
 
-- main_input.txt :
+- [main_input] :
     ```
     $ If you need to train the model on a custom dataset Y otherwise N
     $ If you need to test the model Y otherwise N
@@ -48,7 +48,7 @@ and create following .txt files :-
 
 If Train == "Y":
 
-- train_input.txt
+- [train_input]
     ```
     $ Number of Layers
     $ Parent directory containing data images
@@ -63,7 +63,7 @@ If Train == "Y":
 
 If Test == "Y":
 
-- test_input.txt
+- [test_input]
     ```
     $ Name of directory containing Data files
     $ Name of cell directory containing images
