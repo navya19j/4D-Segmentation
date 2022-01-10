@@ -18,7 +18,7 @@ class SegmentationModel(object):
 
     def load_model(self, checkpoint: Optional[str]) -> None:
 
-        self.model = UNet(in_channels=1,out_channels=1)
+        self.model = UNet(layers=4, in_channels=1,out_channels=1)
         self.model.to(self.device)
 
         if checkpoint:

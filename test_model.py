@@ -21,6 +21,6 @@ def test_pre_process():
     img = torch.zeros((180, 600))
     img_t = model.pre_process(img)
 
-    assert img_t.shape == (180, 600) # this is wrong
+    assert img_t.shape == (1, 180, 600) # this is wrong
     assert img_t.dtype == torch.float32
 
