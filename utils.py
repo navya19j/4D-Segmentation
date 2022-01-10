@@ -15,7 +15,7 @@ from dataset_test import *
 
 # test = []
 
-def get_loaders(path,data,label,cellname,part,truth,bat_size):
+def get_loaders(path,data,label,cellname,part:bool ,truth,bat_size):
     
     dataset_all = EndosomeDataset(path,data,label,cellname,truth)
     torch.manual_seed(5)
@@ -26,7 +26,7 @@ def get_loaders(path,data,label,cellname,part,truth,bat_size):
     # if (66 in indices):
     #     indices.remove(66)
     
-    if (part=="Y"):
+    if part:
         length = len(indices)
         idx = int(-0.2*length)
         # print(idx)
@@ -162,7 +162,7 @@ def save_prediction (loader,model,path,device,img_path):
     model.train()
 
 
-def save_prediction_test (loader,model,path,device,img_path,truth):
+def save_prediction_test (loader,model,path,device,img_path,truth:bool):
 
     model.eval()
     i = 0
@@ -194,7 +194,7 @@ def save_prediction_test (loader,model,path,device,img_path,truth):
         except:
             name = i+".tif" # TODO : dont not assume .tif it can be .tiff
 
-        if (truth=="Y"):
+        if truth:
             change_dims_one_act(path + "/" +  name,x,img_path)
         else:
             change_dims_one(path + "/" +  name,x,img_path)

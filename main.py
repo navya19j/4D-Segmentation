@@ -11,30 +11,32 @@ import track
 import test
 import train
 
+import yaml
+
 if __name__ == "__main__":
 
     
+    with open("config.yaml", "r") as f:
+        try:
+            conf = yaml.safe_load(f)
+        except Exception as e:
+            print(e)
+            print("Unable to load config.yaml")
 
-    with open(sys.argv[1],'r') as main_file:
-        main_inputs = [line.strip() for line in main_file]
+    # print(conf)
 
-    to_train, to_test, to_track = main_inputs[0],main_inputs[1],main_inputs[2]
-
-    if (to_train == "Y"):
+    if conf["train"]["run"]:
         
-        with open(sys.argv[2], 'r') as file:
-            train_inputs = [line.strip() for line in file]
+        train.main(config = conf["train"])
 
-        train.main(train_inputs)
-
-    if (to_test == "Y"):
+    if conf["test"]["run"]:
 
         with open(sys.argv[3], 'r') as file:
             test_inputs = [line.strip() for line in file]
 
         test.main(test_inputs)
 
-    if (to_track == "Y"):
+    if conf["track"]["run"]:
 
         with open(sys.argv[4], 'r') as file:
             track_inputs = [line.strip() for line in file]

@@ -42,51 +42,60 @@ def train_one_epoch(loader,model,optimizer,loss_func,scaler,device):
         del y
         del loss
 
-def main(train_inputs):
+def main(config):
+    
+    # load training config
+    # data
+    ROOT = os.getcwd()
+    TRAIN_DATA = config["train_data"]
+    LABEL_DATA = config["label_data"]
+    CELLNAME = config["cellname"]
+
+    # model
+    CHECKPOINT_FILE = config["checkpoint"]
+    PART = config["part"] # TODO: rename this
+    TRUTH = config["truth"] # TODO: rename this
+
+    # hyperparameters
+    NUM_LAYERS = config["num_layers"]
+    BATCH_SIZE = config["batch_size"]
+    NUM_EPOCHS = config["num_epochs"]
+    LEARNING_RATE = 1e-4
+    WEIGHT_DECAY = 1e-5
     
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-
     if (device=="cuda"):
         torch.cuda.empty_cache()
-
-    num,data,label,cellname,part,truth,bat_size,num_epochs,transfer,trained_model = int(train_inputs[0]),train_inputs[1],train_inputs[2],train_inputs[3],train_inputs[4],train_inputs[5],int(train_inputs[6]),int(train_inputs[7]),train_inputs[8],train_inputs[9]
-
-    model = UNet(layers=num,in_channels=1,out_channels=1)
+    
+    # load model
+    model = UNet(layers=NUM_LAYERS,in_channels=1,out_channels=1)
     model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
-    learning_rate = 1e-4
-    optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
-    path = os.getcwd()
+    optimize = optim.Adam(model.parameters(), lr = LEARNING_RATE,weight_decay = WEIGHT_DECAY)
+    scaler = torch.cuda.amp.GradScaler()
+    
+    if CHECKPOINT_FILE:
+        load_checkpoint_train(torch.load(CHECKPOINT_FILE, map_location=device),model,optimize)
 
-    if (part == "Y"):
-        train_loader,test_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
+    # load dataset
+    if PART:
+        train_loader,test_loader = get_loaders(ROOT,TRAIN_DATA,LABEL_DATA,CELLNAME,PART,TRUTH,BATCH_SIZE)
     else:
-        train_loader = get_loaders(path,data,label,cellname,part,truth,bat_size)
+        train_loader = get_loaders(ROOT,TRAIN_DATA,LABEL_DATA,CELLNAME,PART,TRUTH,BATCH_SIZE)
         test_loader = train_loader
 
-    num_classes = 2
-
-    if (transfer == "Y"):
-        load_model = True
-    else:
-        load_model = False
-    scaler = torch.cuda.amp.GradScaler()
+    # num_classes = 2
+    
     dice_test = 0
     iou_test = 0
 
     dice_train = 0
     iou_train = 0
 
-    if load_model:
-        load_checkpoint_train(torch.load(trained_model, map_location=device),model,optimize)
-
-    epochs = [i for i in range (num_epochs)]
-    loop = tqdm(epochs)
-    # print(epochs)
-
+    loop = tqdm(range(NUM_EPOCHS))
     for epoch in loop:
 
-        loop.set_description(f"Epoch {epoch+1}/{num_epochs}")
+        loop.set_description(f"Epoch {epoch+1}/{NUM_EPOCHS}")
         train_one_epoch(train_loader,model,optimize,loss_fn,scaler,device)
 
         checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
@@ -110,14 +119,14 @@ def main(train_inputs):
 
         loop.set_postfix({'IOU Train': b,'Dice Train':a})
 
-    root = os.getcwd()
-    one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
-    img_path = os.path.join(path,data,cellname,one_img)
+    # ROOT = os.getcwd()
+    # one_img = (list(sorted(os.listdir(os.path.join(ROOT,TRAIN_DATA,CELLNAME)))))[0]
+    # img_path = os.path.join(ROOT,TRAIN_DATA,CELLNAME,one_img)
 
-    pred_mask = os.path.join(root, "output", cellname, "predicted_mask")
+    pred_mask = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
     os.makedirs(pred_mask, exist_ok=True)
     
-    if (part == "Y"):
+    if PART:
         print("Test Trends: ")
         print("Dice: ")
         print(dice_test)

@@ -1,10 +1,10 @@
 4
 Data
 Labeled
-cell02_EEA1 TagRFP
+cell02_APPL1_GFP
 Y
 N
 2
 20
 N
-checkpoint.pth.tar
+checkpoint_train.pth.tar

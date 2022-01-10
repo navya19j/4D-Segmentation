@@ -15,9 +15,9 @@ def conv_to_bw(arr):
     return arr
 
 
-def get_final(path_dir_1,mask,truth):
+def get_final(path_dir_1,mask,truth:bool):
     
-    if (truth == "Y"):
+    if truth:
         img = Image.open(path_dir_1)
         output = get_binary_image(img)
         images = output[0]

@@ -15,3 +15,11 @@ Data/*
 output/*
 test_data/*
 Predicted/*
+.coverage
+notes.md
+predicted_mask_test.zip
+.ipynb_checkpoints/*
+program.prof
+out.profile
+test1.tif
+test2.tif

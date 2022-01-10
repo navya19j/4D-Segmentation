@@ -1,0 +1,15 @@
+train:
+  run: True
+  train_data: Data
+  label_data: Labeled
+  cellname: cell02_APPL1_GFP
+  part: True
+  truth: False
+  num_layers: 4
+  batch_size: 2
+  num_epochs: 20
+  checkpoint: checkpoint_train.pth.tar
+test:
+  run: True
+track: 
+  run: True
