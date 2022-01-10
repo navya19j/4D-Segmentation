@@ -33,29 +33,30 @@ if __name__ == "__main__":
 
     if conf["track"]["run"]:
 
-        with open(sys.argv[4], 'r') as file:
-            track_inputs = [line.strip() for line in file]
+        # load tracking config
+        ROOT = os.getcwd()
+        CELLNAME = conf["track"]["cellname"]
+        MIN_AREA = conf["track"]["min_area"]
+        MIN_VOLUME = conf["track"]["min_volume"]
+        MIN_IOU_THRESHOLD_2D = conf["track"]["min_iou_threshold_2d"]
+        MIN_IOU_THRESHOLD_3D = conf["track"]["min_iou_threshold_3d"]
 
-        root = os.getcwd()
-        # cellname = input("Enter cellname: ")
-        # min_area = input("Minimum area of Box: ")
-        # min_vol = input("Minimum Volume of Box: ")
+        # setup temp directories
+        TRACKING_DIR = os.path.join(ROOT,"output",CELLNAME,"predicted_mask")
+        os.makedirs(os.path.join(TRACKING_DIR,"bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(TRACKING_DIR,"complete_bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(TRACKING_DIR,"3D_Box"), exist_ok=True)
 
-        cellname,min_area,min_vol,iou_square,iou_cube = track_inputs[0],int(track_inputs[1]),int(track_inputs[2]),int(track_inputs[3]),int(track_inputs[4])
+        # run tracking pipeline
+        boundary_box.create_bound_box(TRACKING_DIR,MIN_AREA)
+        sort.run(TRACKING_DIR,MIN_IOU_THRESHOLD_2D)
+        newcoord.run(TRACKING_DIR,MIN_VOLUME)
+        track.run(TRACKING_DIR,MIN_IOU_THRESHOLD_3D)
 
-        dir = os.path.join(root,"output",cellname,"predicted_mask")
-        os.makedirs(os.path.join(dir,"bounding_box"), exist_ok=True)
-        os.makedirs(os.path.join(dir,"complete_bounding_box"), exist_ok=True)
-        os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
-
-        boundary_box.create_bound_box(dir,min_area)
-        sort.run(dir,iou_square)
-        newcoord.run(dir,min_vol)
-        track.run(dir,iou_cube)
-
-        shutil.rmtree(os.path.join(dir,"bounding_box"))
-        shutil.rmtree(os.path.join(dir,"complete_bounding_box"))
-        shutil.rmtree(os.path.join(dir,"3D_Box"))
+        # cleanup temp directories
+        shutil.rmtree(os.path.join(TRACKING_DIR,"bounding_box"))
+        shutil.rmtree(os.path.join(TRACKING_DIR,"complete_bounding_box"))
+        shutil.rmtree(os.path.join(TRACKING_DIR,"3D_Box"))
         
         print("Saved final trajectory in object.txt and track.txt")
 
