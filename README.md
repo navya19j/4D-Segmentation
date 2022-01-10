@@ -42,7 +42,7 @@ train:
     train_data: the directory containing the training data
     label_data: the directory containing the labelled data
     cellname: the name of the cell containing the training / labelled data
-    part: do you want to split the dataset into train and test sets. (train_test_split)
+    train_test_split: do you want to split the dataset into train and test sets. (train_test_split)
     truth:  do you want to 'not' reduce the images to 128x128 size. (downsample)
     num_layers: the number of layers in the model(U-Net).
     batch_size: the size of the training batch.

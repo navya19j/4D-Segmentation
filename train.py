@@ -53,8 +53,8 @@ def main(config):
 
     # model
     CHECKPOINT_FILE = config["checkpoint"]
-    PART = config["part"]  # TODO: rename this
-    TRUTH = config["truth"]  # TODO: rename this
+    TRAIN_TEST_SPLIT = config["train_test_split"]
+    DOWNSAMPLE = config["downsample"] # atm this is NOT_DOWNSAMPLE
 
     # hyperparameters
     NUM_LAYERS = config["num_layers"]
@@ -82,13 +82,13 @@ def main(config):
         )
 
     # load dataset
-    if PART:
+    if TRAIN_TEST_SPLIT:
         train_loader, test_loader = get_loaders(
-            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, PART, TRUTH, BATCH_SIZE
+            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, TRAIN_TEST_SPLIT, DOWNSAMPLE, BATCH_SIZE
         )
     else:
         train_loader = get_loaders(
-            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, PART, TRUTH, BATCH_SIZE
+            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, TRAIN_TEST_SPLIT, DOWNSAMPLE, BATCH_SIZE
         )
         test_loader = train_loader
 
@@ -137,7 +137,7 @@ def main(config):
     pred_mask = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
     os.makedirs(pred_mask, exist_ok=True)
 
-    if PART:
+    if TRAIN_TEST_SPLIT:
         print("Test Trends: ")
         print("Dice: ")
         print(dice_test)

@@ -15,9 +15,9 @@ from dataset_test import *
 # test = []
 
 
-def get_loaders(path, data, label, cellname, part: bool, truth, bat_size):
+def get_loaders(path, data, label, cellname, train_test_split: bool, downsample, bat_size):
 
-    dataset_all = EndosomeDataset(path, data, label, cellname, truth)
+    dataset_all = EndosomeDataset(path, data, label, cellname, downsample)
     torch.manual_seed(5)
 
     indices = torch.randperm(len(dataset_all)).tolist()
@@ -26,7 +26,7 @@ def get_loaders(path, data, label, cellname, part: bool, truth, bat_size):
     # if (66 in indices):
     #     indices.remove(66)
 
-    if part:
+    if train_test_split:
         length = len(indices)
         idx = int(-0.2 * length)
         # print(idx)
@@ -66,9 +66,9 @@ def get_loaders(path, data, label, cellname, part: bool, truth, bat_size):
         return data_loader_train
 
 
-def get_loaders_test(path, data, cellname, truth):
+def get_loaders_test(path, data, cellname, downsample):
 
-    dataset_all = Dataset_Test(path, data, cellname, truth)
+    dataset_all = Dataset_Test(path, data, cellname, downsample)
     data_loader_test = torch.utils.data.DataLoader(
         dataset_all, batch_size=1, num_workers=0, shuffle=False, pin_memory=True
     )
@@ -182,7 +182,7 @@ def save_prediction(loader, model, path, device, img_path):
     model.train()
 
 
-def save_prediction_test(loader, model, path, device, img_path, truth: bool):
+def save_prediction_test(loader, model, path, device, img_path, downsample: bool):
 
     model.eval()
     i = 0
@@ -214,7 +214,7 @@ def save_prediction_test(loader, model, path, device, img_path, truth: bool):
         except:
             name = i + ".tif"  # TODO : dont not assume .tif it can be .tiff
 
-        if truth:
+        if downsample:
             change_dims_one_act(path + "/" + name, x, img_path)
         else:
             change_dims_one(path + "/" + name, x, img_path)

@@ -3,17 +3,17 @@ train:
   train_data: Data
   label_data: Labeled
   cellname: cell02_APPL1_GFP
-  part: True
-  truth: False
+  train_test_split: True
+  downsample: True
   num_layers: 4
   batch_size: 2
   num_epochs: 20
   checkpoint: checkpoint_train.pth.tar
 test:
-  run: True
+  run: False
   test_data: Data
   cellname: cell02_APPL1_GFP
-  truth: False
+  downsample: True
   num_layers: 4
   checkpoint: checkpoint_train.pth.tar
 track: 
