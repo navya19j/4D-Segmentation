@@ -2,8 +2,7 @@ import os
 
 import numpy as np
 import torch
-from numpy.core.fromnumeric import size
-from PIL import Image, ImageSequence
+from PIL import Image
 from tifffile import imsave
 from tqdm import tqdm
 
