@@ -15,6 +15,23 @@ torch.set_printoptions(profile="full")
 
 
 class EndosomeDataset(torch.utils.data.Dataset):
+
+    """"
+        Class for the Training Dataset
+
+        Test Dataset is structured as follows :
+        
+        root --> data --> cellname --> all input image files
+        root --> label --> cellname --> all masked image files
+
+        args:
+            root : Root Directory
+            data : Name of directory containing all folders of input data
+            label : Name of directory containing all folders of mask data
+            cellname : Name of the Directory containing images in either folder
+            truth : True if input image is to be reduced in size, otw False
+    """
+
     def __init__(self, root, data, label, cellname, downsample):
         self.root = root
         # self.transforms = transforms
@@ -65,4 +82,7 @@ class EndosomeDataset(torch.utils.data.Dataset):
         return img_array, mask_array
 
     def __len__(self):
+        """
+            Number of images in the loader
+        """
         return len(self.imgs)

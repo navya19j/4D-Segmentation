@@ -13,7 +13,19 @@ import ast
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
+
+
+
 def run(predictions,min_vol):
+    """
+        Returns all the 3D bounding boxes in the image file.
+
+        args:
+            predictions : Folder Name containing the predicted images
+            min_vol : Minimum Volume of the bounding cube to be classified as a valid bounding box for detected object
+
+    """
+
     print(f"Generating 3D Bounding Boxes")
     start_directory_1 = os.path.join(os.getcwd(),predictions,"bounding_box")
     start_directory_2 = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
@@ -36,13 +48,12 @@ def run(predictions,min_vol):
         bbox = ast.literal_eval(contents)
 
         path = os.path.join(os.getcwd(),predictions)
-        # path_final = os.getcwd() + "Labeled/cell02_EEA1 TagRFP contours/temp"
 
         imgbox = conv_dict_to_class(dictionary)
         bbox = conv_dict_to_class(bbox)
 
         img = files[0:len(files)-4] + ".tif"
-        # imgs = files[0:len(files)-8] + "f1" ".tif"
+
         finalbbox = {}
         isvisited = {}
         final_arr = []
@@ -52,7 +63,6 @@ def run(predictions,min_vol):
         if (x==0):
             path_img = os.path.join(path,img)
             img_arr = imread(path_img)
-            # print(img_arr.shape)
             d = img_arr.shape[0]
 
         for i in range (0,d):
@@ -72,7 +82,6 @@ def run(predictions,min_vol):
                     coord = bb_iou[out]
 
                     if (out >= 0.2):
-                        # cv2.rectangle(res,(coord.x,coord.y),(coord.x+coord.w,coord.y+coord.h),(0,255,0),1)
                         bb = [coord.x,coord.y,coord.w,coord.h]
 
                         if (coord in isvisited):
@@ -85,12 +94,6 @@ def run(predictions,min_vol):
                             depth[coord] = 1
                             
                         finalbbox[i+1].append(bb)
-
-            # final_arr.append(res)
-
-        # imsave(path_final+"/"+imgs,final_arr)
-        # print("Done")
-        # print(finalbbox)
         allbox = {0:[]}
 
         for i in start:
@@ -121,5 +124,5 @@ def conv_dict_to_class(dictionary):
     return dictionary
 
 if __name__ == "__main__":
-    # predictions = input("Enter directory containing masks to be tracked: ")
+
     run(sys.argv[2])

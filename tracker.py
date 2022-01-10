@@ -1,18 +1,20 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import glob
-import ast
-import cv2
 from helper3D import *
 from tifffile import *
-import os
 from collections import OrderedDict
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
 class Tracker:
+    
+    """
+        Tracker Object for tracking objects
 
-    # objects contains all current ids and positions of objects being tracked
-    # active counter for sequential tracks of each object
+        args:
+            iou_threshold = Minimum IOU Threshold
+            active_threshold = The minimum times the object should appear before being classified as a valid detection
+            non_active_threshold = The minimum times the object should be missed from the frame to be removed from the object list
+
+    """
 
     def __init__(self,iou_threshold,active_threshold = 0, non_active_threshold = 10):
         self.next_box_id = 0
@@ -44,7 +46,6 @@ class Tracker:
                 iou_matrix[d,t] = IOU(det,trk)
 
         matched_indices = linear_assignment(-iou_matrix)
-        # print(matched_indices)
         unmatched_detections = []
 
         for d,det in enumerate(detections):
@@ -107,10 +108,7 @@ class Tracker:
 
             for col in unmatched_detections:
                 self.add_object(detections[col])
-
-        # print(self.objects)
-        # print("Active")
-        # print(self.active)
+                
         active_objects = dict(filter(lambda elem: self.active[elem[0]]>=self.active_threshold,self.objects.items()))
 
         return active_objects

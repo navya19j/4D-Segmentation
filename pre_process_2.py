@@ -1,22 +1,50 @@
 import math
 import sys
-
 import cv2
 import numpy as np
 from PIL import Image
 
-# from tifffile import imsave
-from pre_process_original import get_binary_image
-
 np.set_printoptions(threshold=sys.maxsize)
 
+def get_padded_image(img):
 
-# def conv_to_bw(arr):
+    """
+        Pads the image across 2 dimensions to create a cube with size as the maximum dimension 
+        in the input image
 
-#     arr = np.where(arr > 0, 1, 0)
-#     arr = arr * 255
+        Args:
+            img: PIL Image object
+        Returns:
+            img, d, h, w, max_dim: np.array of image, depth, height, width, max(d,h,w)
+    """
 
-#     return arr
+    images = []
+    for i in range(0, img.n_frames):
+        res = img.seek(i)
+        images.append(np.array(img, dtype=np.float32))
+
+    images = np.array(images, dtype=np.float32)
+
+    d = images.shape[0]
+    h = images.shape[1]
+    w = images.shape[2]
+
+    max_dim = max(max(h, w), d)
+
+    d_up = int(math.ceil(float((max_dim - d) / 2)))
+    d_down = int(math.floor(float((max_dim - d) / 2)))
+
+    w_up = int(math.ceil(float((max_dim - w) / 2)))
+    w_down = int(math.floor(float((max_dim - w) / 2)))
+
+    h_up = int(math.ceil(float((max_dim - h) / 2)))
+    h_down = int(math.floor(float((max_dim - h) / 2)))
+
+    images = np.pad(images, ((d_up, d_down), (0, 0), (0, 0)), "wrap")
+    images = np.pad(images, ((0, 0), (0, 0), (w_up, w_down)), "wrap")
+    images = np.pad(images, ((0, 0), (h_up, h_down), (0, 0)), "wrap")
+
+    return (images, d, h, w, max_dim)
 
 
 def get_final(path_dir_1: str, mask: bool = False, downsample: bool = True):
@@ -31,7 +59,7 @@ def get_final(path_dir_1: str, mask: bool = False, downsample: bool = True):
     """
 
     img = Image.open(path_dir_1)
-    output = get_binary_image(img)
+    output = get_padded_image(img)
     images = output[0]
 
     if downsample:

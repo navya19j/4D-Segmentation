@@ -9,14 +9,15 @@ from dataset import *
 from unet import *
 from utils import *
 
-# increase dimension of training mask at 1
-# try deleting loss after each epoch taking it out of loop and summing
 
-# Hyperparameters
 torch.set_printoptions(profile="full")
 
 
 def train_one_epoch(loader, model, optimizer, loss_func, scaler, device):
+
+    """
+        Helper function to train one epoch
+    """
 
     model.train()
     loop = tqdm(loader)
@@ -110,29 +111,24 @@ def main(config):
             "state_dict": model.state_dict(),
             "optimizer": optimize.state_dict(),
         }
+        
         checkpoint_test = {"state_dict": model.state_dict()}
 
-        x, y = check_accuracy(test_loader, model, device, loss_fn)
-        a, b = check_accuracy(train_loader, model, device, loss_fn)
-        print(x)
-        print(y)
+        iou_temp_test, dice_temp_test = check_accuracy(test_loader, model, device, loss_fn)
+        iou_temp_train, dice_temp_train = check_accuracy(train_loader, model, device, loss_fn)
 
-        loop.set_postfix({"IOU Test": y, "Dice Test": x})
+        loop.set_postfix({"IOU Test": iou_temp_test, "Dice Test": dice_temp_test})
 
-        if y >= iou_test or x >= dice_test:
+        if  (iou_temp_test >= iou_test or dice_temp_test >= dice_test):
             save_checkpoint_train(checkpoint, "checkpoint_best_train.pth.tar")
             save_checkpoint_test(checkpoint_test, "checkpoint_best_test.pth.tar")
-            iou_test = y
-            dice_test = x
-            iou_train = b
-            dice_train = a
+            iou_test = iou_temp_test
+            dice_test = dice_temp_test
+            iou_train = iou_temp_train
+            dice_train = dice_temp_train
             print("Saved")
 
-        loop.set_postfix({"IOU Train": b, "Dice Train": a})
-
-    # ROOT = os.getcwd()
-    # one_img = (list(sorted(os.listdir(os.path.join(ROOT,TRAIN_DATA,CELLNAME)))))[0]
-    # img_path = os.path.join(ROOT,TRAIN_DATA,CELLNAME,one_img)
+        loop.set_postfix({"IOU Train": iou_temp_train, "Dice Train": dice_temp_train})
 
     pred_mask = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
     os.makedirs(pred_mask, exist_ok=True)

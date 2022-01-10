@@ -1,4 +1,17 @@
 class Box:
+
+    """
+        Class for 2D Bounding Boxes
+
+        args:
+            x: X coordinate
+            y: Y coordinate
+
+            w: width
+            h: height
+
+    """
+
     def __init__(self,x,y,w,h):
         self.x = int(x)
         self.y = int(y)
@@ -12,6 +25,15 @@ class Box:
             return 0
 
 def overlap_box(Box_1,Box_2):
+
+    """
+        Gives the bounding box at the intersection of Box_1 and Box_2
+
+        args:
+            Box_1: A bounding box
+            Box_2: A bounding box
+    """
+
     x_1 = Box_1.x
     y_1 = Box_1.y
     w_1 = Box_1.w
@@ -39,11 +61,27 @@ def overlap_box(Box_1,Box_2):
 
 def intersection(Box_1,Box_2):
 
+    """
+        Gives the volume of the bounding box at the intersection of Box_1 and Box_2
+
+        args:
+            Box_1: A bounding box
+            Box_2: A bounding box
+    """
+
     Box_overlap = overlap_box(Box_1,Box_2)
     
     return (Box_overlap.area())
 
 def union(Box_1,Box_2):
+
+    """
+        Gives the union of Box_1 and Box_2
+
+        args:
+            Box_1: A bounding box
+            Box_2: A bounding box
+    """
 
     area_1 = Box_1.area()
     area_2 = Box_2.area()
@@ -52,6 +90,15 @@ def union(Box_1,Box_2):
     return (area_1+area_2-inter)
 
 def IOU(Box_1,Box_2):
+
+    """
+        Gives the IOU measure of Box_1 and Box_2
+        # added 1e-7 to incoporate the case with union area = 0
+
+        args:
+            Box_1: A bounding box
+            Box_2: A bounding box
+    """
     
     area_overlap = intersection(Box_1,Box_2)
     area_union = union(Box_1,Box_2)
