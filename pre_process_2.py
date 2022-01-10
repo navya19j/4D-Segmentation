@@ -1,21 +1,25 @@
-import numpy as np
+import math
 import sys
-from tifffile import imsave
-from pre_process_original import *
+
 import cv2
+import numpy as np
+from PIL import Image
+
+# from tifffile import imsave
+from pre_process_original import get_binary_image
 
 np.set_printoptions(threshold=sys.maxsize)
 
 
-def conv_to_bw(arr):
+# def conv_to_bw(arr):
 
-    arr = np.where(arr > 0, 1, 0)
-    arr = arr * 255
+#     arr = np.where(arr > 0, 1, 0)
+#     arr = arr * 255
 
-    return arr
+#     return arr
 
 
-def get_final(path_dir_1, mask, downsample: bool):
+def get_final(path_dir_1: str, mask: bool = False, downsample: bool = True):
     """
     Load the image from disk, and optionally resize it
     Args:
@@ -25,7 +29,6 @@ def get_final(path_dir_1, mask, downsample: bool):
     Returns:
         img: np.array of image
     """
-
 
     img = Image.open(path_dir_1)
     output = get_binary_image(img)
@@ -51,7 +54,6 @@ def get_final(path_dir_1, mask, downsample: bool):
             final.append(np.array(res))
 
         out = np.array(final)
-        # print(out.shape)
 
         return np.array(out)
     else:
