@@ -23,18 +23,13 @@ if __name__ == "__main__":
             print(e)
             print("Unable to load config.yaml")
 
-    # print(conf)
-
     if conf["train"]["run"]:
         
         train.main(config = conf["train"])
 
     if conf["test"]["run"]:
 
-        with open(sys.argv[3], 'r') as file:
-            test_inputs = [line.strip() for line in file]
-
-        test.main(test_inputs)
+        test.main(conf["test"])
 
     if conf["track"]["run"]:
 

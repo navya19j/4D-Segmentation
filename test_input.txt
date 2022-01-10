@@ -1,5 +1,5 @@
 Data
-cell02_EEA1 TagRFP
+cell02_APPL1_GFP
 N
 4
-checkpoint.pth.tar
+checkpoint_train.pth.tar

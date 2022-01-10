@@ -175,7 +175,7 @@ def save_prediction_test (loader,model,path,device,img_path,truth:bool):
 
     for batch_idx, x in enumerate(loop):
 
-        loop.set_description(f"Image {i}/{len(loop)}: Model Inference")
+        loop.set_description(f"Image {batch_idx+1}/{len(loop)}: Model Inference")
         # print(all_ims[i])
         x = x.float().to(device)
         n_c = x.shape[2]
