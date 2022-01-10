@@ -1,5 +1,0 @@
-Data
-cell02_APPL1_GFP
-N
-4
-checkpoint_train.pth.tar
