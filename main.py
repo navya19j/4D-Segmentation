@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 
 import os
+import sys
 import shutil
 import test
+import argparse
 
 import yaml
+
 
 import boundary_box
 import newcoord
@@ -14,21 +17,38 @@ import train
 
 if __name__ == "__main__":
 
-    with open("config.yaml", "r") as f:
+    parser = argparse.ArgumentParser(
+        description="Segmentation pipeline command line tool"
+    )
+    parser.add_argument(
+        "-c", "--config", type=str, default="config.yaml", 
+        help="the pipeline configuration file (yaml)"
+    )
+
+    args = parser.parse_args()
+    conf_filename = args.config
+
+    # load config
+    with open(conf_filename, "r") as f:
+        print(f"Loading {conf_filename} config file")
         try:
             conf = yaml.safe_load(f)
         except Exception as e:
             print(e)
-            print("Unable to load config.yaml")
+            print(f"Unable to load {conf_filename}")
+    # TODO: validate the yaml file
 
+    # run training
     if conf["train"]["run"]:
 
         train.main(config=conf["train"])
 
+    # run testing
     if conf["test"]["run"]:
 
         test.main(conf["test"])
 
+    # run tracking
     if conf["track"]["run"]:
 
         # load tracking config
