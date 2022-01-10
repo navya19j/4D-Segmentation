@@ -1,5 +1,5 @@
 train:
-  run: False
+  run: True
   train_data: Data
   label_data: Labeled
   cellname: cell02_APPL1_GFP
@@ -10,7 +10,7 @@ train:
   num_epochs: 20
   checkpoint: checkpoint_train.pth.tar
 test:
-  run: False
+  run: True
   test_data: Data
   cellname: cell02_APPL1_GFP
   truth: False
