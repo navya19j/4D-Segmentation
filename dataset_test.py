@@ -14,7 +14,7 @@ torch.set_printoptions(profile="full")
 #np.set_printoptions(threshold=np.inf)
 
 class Dataset_Test(torch.utils.data.Dataset):
-    def __init__(self,root,data,cellname,truth):
+    def __init__(self,root,data,cellname,truth:bool):
         self.root = root
         self.truth = truth
         # self.transforms = transforms

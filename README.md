@@ -2,8 +2,6 @@
 
 This repository contains the code for automated segmentation and tracking of endosomes in a living cells acquired using LLSM.
 
-TODO: check the correct wording on this
-
 ![4D Endosome Segmentation](doc/img/4d_segmentation.gif)
 
 ## Getting Started
@@ -29,63 +27,43 @@ You are now ready to run the segmentation and tracking pipeline.
 ## Running the Pipeline
 
 The pipeline expects a directory of .tif volumetric image repesenting the cell imaging at each timestep. 
-TODO: check what is the correct wording for this. 
 
 To run the entire pipeline:
 ```
-$ python3 main.py [main_input] [train_input] [test_input] [track_input]
+$ python3 main.py -c config.yaml
 ```
 
-and create following files :-
+The configuration of the pipeline can be changed by editing the config.yaml file (or by supplying your own).
 
-Note : If you do not want to run all components, pass empty files to command line argument corresponding to the components you do not want to run
+### config.yaml
+```
+train:
+    run: do you want to run model training
+    train_data: the directory containing the training data
+    label_data: the directory containing the labelled data
+    cellname: the name of the cell containing the training / labelled data
+    train_test_split: do you want to split the dataset into train and test sets. (train_test_split)
+    truth:  do you want to 'not' reduce the images to 128x128 size. (downsample)
+    num_layers: the number of layers in the model(U-Net).
+    batch_size: the size of the training batch.
+    num_epochs: the number of epochs to train for.
+    checkpoint: the pretrained model checkpoint to continue training from (null if starting from scratch)
+test:
+    run: do you want to run model testing (segmentation)
+    test_data: the directory containing the testing data.
+    cellname: the name of the cell containing the testing data.
+    truth: do you want to 'not' reduce the images to 128x128 size. (downsample)
+    num_layers: the number of layers in the model (U-Net).
+    checkpoint: the model checkpoint to load
+track:
+    run: do you want to run tracking.
+    cellname: the name of the cell containing the testing data.
+    min_area: the minimum area for a bounding box per slice.
+    min_volume: the minimum volume for a bounding box per volume. 
+    min_iou_threshold_2d: the minimum iou threshold (2-dimensional)
+    min_iou_threshold_3d: the minimum iou threshold (3-dimensional)
 
-- [main_input] :
-    ```
-    $ If you need to train the model on a custom dataset Y otherwise N
-    $ If you need to test the model Y otherwise N
-    $ If you need to track the segmented data Y otherwise N
-
-    ```
-
-If Train == "Y":
-
-- [train_input]
-    ```
-    $ Number of Layers
-    $ Parent directory containing data images
-    $ Parent directory containing ground truth masks
-    $ Name of cell directory containing images in both parent directory
-    $ If you want to split dataset into train and test Y otherwise N
-    $ If you want to "not" reduce the size of images to 128 to train the model set Y otherwise N (recommended : N)
-    $ Number of Epochs
-    $ If train further on the pretrained model Y otherwise N
-    $ Name of Pre-Trained model (If no pre-trained model, set to None)
-    ```
-
-If Test == "Y":
-
-- [test_input]
-    ```
-    $ Name of directory containing Data files
-    $ Name of cell directory containing images
-    $ If you want to "not" reduce the size of images to 128 to train the model set Y otherwise N (recommended : N)
-    $ Number of Layers in the UNET model
-    $ Name of Trained model
-
-    ```
-
-If Track == "Y":
-
-- [track_input]
-    ```
-    $ Name of cell directory containing images
-    $ Minimum Area of bounding box per slice
-    $ Minimum Volume of bounding box
-
-    ```
-
-
+```
 
 <!-- You are also able to run each component individually using the following instructions:  
 ### Train

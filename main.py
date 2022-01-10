@@ -1,66 +1,81 @@
 #!/usr/bin/env python3
 
-from subprocess import call
 import os
-import shutil
-import boundary_box
-import sort
-import newcoord
 import sys
-import track
+import shutil
 import test
+import argparse
+
+import yaml
+
+
+import boundary_box
+import newcoord
+import sort
+import track
 import train
 
 if __name__ == "__main__":
 
-    
+    parser = argparse.ArgumentParser(
+        description="Segmentation pipeline command line tool"
+    )
+    parser.add_argument(
+        "-c", "--config", type=str, default="config.yaml", 
+        help="the pipeline configuration file (yaml)"
+    )
 
-    with open(sys.argv[1],'r') as main_file:
-        main_inputs = [line.strip() for line in main_file]
+    args = parser.parse_args()
+    conf_filename = args.config
 
-    to_train, to_test, to_track = main_inputs[0],main_inputs[1],main_inputs[2]
+    # load config
+    with open(conf_filename, "r") as f:
+        print(f"Loading {conf_filename} config file")
+        try:
+            conf = yaml.safe_load(f)
+        except Exception as e:
+            print(e)
+            print(f"Unable to load {conf_filename}")
+    # TODO: validate the yaml file
 
-    if (to_train == "Y"):
-        
-        with open(sys.argv[2], 'r') as file:
-            train_inputs = [line.strip() for line in file]
+    # run training
+    if conf["train"]["run"]:
 
-        train.main(train_inputs)
+        train.main(config=conf["train"])
 
-    if (to_test == "Y"):
+    # run testing
+    if conf["test"]["run"]:
 
-        with open(sys.argv[3], 'r') as file:
-            test_inputs = [line.strip() for line in file]
+        test.main(conf["test"])
 
-        test.main(test_inputs)
+    # run tracking
+    if conf["track"]["run"]:
 
-    if (to_track == "Y"):
+        # load tracking config
+        ROOT = os.getcwd()
+        CELLNAME = conf["track"]["cellname"]
+        MIN_AREA = conf["track"]["min_area"]
+        MIN_VOLUME = conf["track"]["min_volume"]
+        MIN_IOU_THRESHOLD_2D = conf["track"]["min_iou_threshold_2d"]
+        MIN_IOU_THRESHOLD_3D = conf["track"]["min_iou_threshold_3d"]
 
-        with open(sys.argv[4], 'r') as file:
-            track_inputs = [line.strip() for line in file]
+        # setup temp directories
+        TRACKING_DIR = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
+        os.makedirs(os.path.join(TRACKING_DIR, "bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(TRACKING_DIR, "complete_bounding_box"), exist_ok=True)
+        os.makedirs(os.path.join(TRACKING_DIR, "3D_Box"), exist_ok=True)
 
-        root = os.getcwd()
-        # cellname = input("Enter cellname: ")
-        # min_area = input("Minimum area of Box: ")
-        # min_vol = input("Minimum Volume of Box: ")
+        # run tracking pipeline
+        boundary_box.create_bound_box(TRACKING_DIR, MIN_AREA)
+        sort.run(TRACKING_DIR, MIN_IOU_THRESHOLD_2D)
+        newcoord.run(TRACKING_DIR, MIN_VOLUME)
+        track.run(TRACKING_DIR, MIN_IOU_THRESHOLD_3D)
 
-        cellname,min_area,min_vol,iou_square,iou_cube = track_inputs[0],int(track_inputs[1]),int(track_inputs[2]),int(track_inputs[3]),int(track_inputs[4])
+        # cleanup temp directories
+        shutil.rmtree(os.path.join(TRACKING_DIR, "bounding_box"))
+        shutil.rmtree(os.path.join(TRACKING_DIR, "complete_bounding_box"))
+        shutil.rmtree(os.path.join(TRACKING_DIR, "3D_Box"))
 
-        dir = os.path.join(root,"output",cellname,"predicted_mask")
-        os.makedirs(os.path.join(dir,"bounding_box"), exist_ok=True)
-        os.makedirs(os.path.join(dir,"complete_bounding_box"), exist_ok=True)
-        os.makedirs(os.path.join(dir,"3D_Box"), exist_ok=True)
-
-        boundary_box.create_bound_box(dir,min_area)
-        sort.run(dir,iou_square)
-        newcoord.run(dir,min_vol)
-        track.run(dir,iou_cube)
-
-        shutil.rmtree(os.path.join(dir,"bounding_box"))
-        shutil.rmtree(os.path.join(dir,"complete_bounding_box"))
-        shutil.rmtree(os.path.join(dir,"3D_Box"))
-        
         print("Saved final trajectory in object.txt and track.txt")
-
 
         # add visualisation here
