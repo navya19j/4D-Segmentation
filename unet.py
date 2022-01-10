@@ -2,7 +2,7 @@ import numpy
 import torch
 import torch.nn as nn
 import torch.nn.functional as TF
-import torchio as tio
+# import torchio as tio
 
 
 class Double_Conv(nn.Module):
@@ -21,13 +21,19 @@ class Double_Conv(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, in_channels = 1, out_channels = 1, features = [64,128,256,512]):
+    def __init__(self, layers,in_channels = 1, out_channels = 1):
         #super calls initialization of inheritance class
         super(UNet,self).__init__()
         self.max_pool = nn.MaxPool3d(kernel_size=2,stride=2)
         self.ups = nn.ModuleList()
         self.downs = nn.ModuleList()
-        
+        # features = [64,128,256,512]
+        features = []
+        for i in range (0,layers):
+            if (i==0):
+                features.append(64)
+            else:
+                features.append(features[-1]*2)
         #Down part of the UNET #encoder
         for i in range (0,len(features)):
             self.downs.append(Double_Conv(in_channels,features[i]))

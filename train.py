@@ -1,138 +1,155 @@
-#increase dimension of training mask at 1
-from numpy import fabs
+import os
+
 import torch
 import torch.nn as nn
-from torch.nn.modules import loss
 import torch.optim as optim
-import torch.nn.functional as F
-import os
 from tqdm import tqdm
-import torch.optim as optimizer
-from unet import *
+
 from dataset import *
+from unet import *
 from utils import *
 
+# increase dimension of training mask at 1
+# try deleting loss after each epoch taking it out of loop and summing
 
-#try deleting loss after each epoch taking it out of loop and summing
-
-#Hyperparameters
+# Hyperparameters
 torch.set_printoptions(profile="full")
 
-def train_one_epoch(loader,model,optimizer,loss_func,scaler,device):
 
+def train_one_epoch(loader, model, optimizer, loss_func, scaler, device):
+
+    model.train()
     loop = tqdm(loader)
+    for batch_idx, (x, y) in enumerate(loop):
 
-    for batch_idx , (x,y) in enumerate(loop):
-
+        loop.set_description(f"Loading Batch {batch_idx+1}/{len(loop)}")
         x = x.float().to(device)
         y = y.float().to(device)
 
         with torch.cuda.amp.autocast():
             x = model(x)
-            loss = loss_func(x,y)
+            loss = loss_func(x, y)
 
         optimizer.zero_grad()
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
 
-        loop.set_postfix(loss = loss.item())
-        
-        del x 
+        loop.set_postfix(loss=loss.item())
+
+        del x
         del y
         del loss
 
 
-def main():
-    
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+def main(config):
 
-    if (device=="cuda"):
+    # load training config
+    # data
+    ROOT = os.getcwd()
+    TRAIN_DATA = config["train_data"]
+    LABEL_DATA = config["label_data"]
+    CELLNAME = config["cellname"]
+
+    # model
+    CHECKPOINT_FILE = config["checkpoint"]
+    TRAIN_TEST_SPLIT = config["train_test_split"]
+    DOWNSAMPLE = config["downsample"] # atm this is NOT_DOWNSAMPLE
+
+    # hyperparameters
+    NUM_LAYERS = config["num_layers"]
+    BATCH_SIZE = config["batch_size"]
+    NUM_EPOCHS = config["num_epochs"]
+    LEARNING_RATE = 1e-4
+    WEIGHT_DECAY = 1e-5
+
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    if device == "cuda":
         torch.cuda.empty_cache()
-        
-    model = UNet(in_channels=1,out_channels=1)
+
+    # load model
+    model = UNet(layers=NUM_LAYERS, in_channels=1, out_channels=1)
     model.to(device)
     loss_fn = nn.BCEWithLogitsLoss()
-    learning_rate = 1e-4
-    optimize = optim.Adam(model.parameters(), lr = learning_rate,weight_decay = 1e-5)
-    path = os.getcwd()
-
-    data = input("Enter parent directory containing data images: ")
-    label = input("Enter parent directory containing ground truth masks: ")
-    cellname = input("Enter name of cell directory containing images in both parent directory: ")
-    
-    train_loader = get_loaders(path,data,label,cellname)[0]
-    test_loader = get_loaders(path,data,label,cellname)[1]
-
-    num_classes = 2
-    num_epochs = 20
-    transfer = input("Do you want to train further on trained data?(Y/N) :")
-    if (transfer == "Y"):
-        load_model = True
-    else:
-        load_model = False
+    optimize = optim.Adam(
+        model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY
+    )
     scaler = torch.cuda.amp.GradScaler()
-    dice_test = []
-    iou_test = []
-    loss_test = []
 
-    dice_train = []
-    iou_train = []
-    loss_train = []
+    if CHECKPOINT_FILE:
+        load_checkpoint_train(
+            torch.load(CHECKPOINT_FILE, map_location=device), model, optimize
+        )
 
-    if load_model:
-        load_checkpoint(torch.load("checkpoint_train.pth.tar"),model,optimize)
+    # load dataset
+    if TRAIN_TEST_SPLIT:
+        train_loader, test_loader = get_loaders(
+            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, TRAIN_TEST_SPLIT, DOWNSAMPLE, BATCH_SIZE
+        )
+    else:
+        train_loader = get_loaders(
+            ROOT, TRAIN_DATA, LABEL_DATA, CELLNAME, TRAIN_TEST_SPLIT, DOWNSAMPLE, BATCH_SIZE
+        )
+        test_loader = train_loader
 
-    for epoch in range (num_epochs):
+    # num_classes = 2
 
-        train_one_epoch(train_loader,model,optimize,loss_fn,scaler,device)
-        try:
-            checkpoint = {"state_dict": model.state_dict(), "optimizer" : optimize.state_dict()}
-            save_checkpoint_train(checkpoint)
+    dice_test = 0
+    iou_test = 0
+
+    dice_train = 0
+    iou_train = 0
+
+    loop = tqdm(range(NUM_EPOCHS))
+    for epoch in loop:
+
+        loop.set_description(f"Epoch {epoch+1}/{NUM_EPOCHS}")
+        train_one_epoch(train_loader, model, optimize, loss_fn, scaler, device)
+
+        checkpoint = {
+            "state_dict": model.state_dict(),
+            "optimizer": optimize.state_dict(),
+        }
+        checkpoint_test = {"state_dict": model.state_dict()}
+
+        x, y = check_accuracy(test_loader, model, device, loss_fn)
+        a, b = check_accuracy(train_loader, model, device, loss_fn)
+        print(x)
+        print(y)
+
+        loop.set_postfix({"IOU Test": y, "Dice Test": x})
+
+        if y >= iou_test or x >= dice_test:
+            save_checkpoint_train(checkpoint, "checkpoint_best_train.pth.tar")
+            save_checkpoint_test(checkpoint_test, "checkpoint_best_test.pth.tar")
+            iou_test = y
+            dice_test = x
+            iou_train = b
+            dice_train = a
             print("Saved")
-            checkpoint_test = {"state_dict": model.state_dict()}
-            save_checkpoint_test(checkpoint_test)
-            print("Saved")
-        except:
-            print("Error")
-        finally:
-            print("Accuracy on Test: ")
-            x,y,z = check_accuracy(test_loader,model,device,loss_fn)
-            dice_test.append(x)
-            iou_test.append(y)
-            loss_test.append(z)
 
-            print("Accuracy on Train: ")
-            a,b,c = check_accuracy(train_loader,model,device,loss_fn)
-            dice_train.append(a)
-            iou_train.append(b)
-            loss_train.append(c)
+        loop.set_postfix({"IOU Train": b, "Dice Train": a})
 
-    one_img = (list(sorted(os.listdir(os.path.join(root,data,cellname)))))[0]
-    img_path = os.path.join(path,data,cellname,one_img)
+    # ROOT = os.getcwd()
+    # one_img = (list(sorted(os.listdir(os.path.join(ROOT,TRAIN_DATA,CELLNAME)))))[0]
+    # img_path = os.path.join(ROOT,TRAIN_DATA,CELLNAME,one_img)
 
-    save_prediction (test_loader,model,path,device,img_path) 
-    print("Test Trends: ")
-    print("Dice: ")
-    print(dice_test)
-    print("IOU: ")
-    print(iou_test)
-    print("Loss: ")
-    print(loss_test)
+    pred_mask = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
+    os.makedirs(pred_mask, exist_ok=True)
+
+    if TRAIN_TEST_SPLIT:
+        print("Test Trends: ")
+        print("Dice: ")
+        print(dice_test)
+        print("IOU: ")
+        print(iou_test)
 
     print("Train Trends: ")
     print("Dice: ")
     print(dice_train)
     print("IOU: ")
     print(iou_train)
-    print("Loss: ")
-    print(loss_train)
-
-    print("Saving")
-    save_prediction (test_loader,model,path,device) 
-    print("Saved")        
 
 
 if __name__ == "__main__":
     main()
-

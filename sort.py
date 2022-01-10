@@ -11,12 +11,14 @@ from scipy.optimize import linear_sum_assignment as linear_assignment
 
 # print(dictionary)
 
-def run(predictions):
+def run(predictions,iou_threshold):
     start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
     final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
-    loop = tqdm(list(os.listdir(start_directory)))
-    for i,files in enumerate(loop):
+    print(f"Tracking across z-direction")
+
+    loop = tqdm(list(sorted(os.listdir(start_directory))))
+    for idx,files in enumerate(loop):
 
         file_path = os.path.join(start_directory,files)
 
@@ -25,25 +27,28 @@ def run(predictions):
         dictionary = ast.literal_eval(contents)
 
         temp = conv_dict_to_class(dictionary)
+        
+        if (temp):
+            start = list(temp.keys())[0]
+            tracked = temp[start]
+            n = 0
+            for i in temp:
+                n+=1
+                loop.set_description(f"Image {idx+1}: Tracking at Depth z={i}/{max(temp)}")
+                tracked = assign_detection_to_tracker(tracked,temp[i],iou_threshold,[])
 
-        start = list(temp.keys())[0]
-        tracked = temp[start]
-        n = 0
+            output = {0:[]}
 
-        for i in temp:
-            n+=1
-            tracked = assign_detection_to_tracker(tracked,temp[i],0.2,[])
+            for i in tracked:
+                f = []
+                f.append(i.x)
+                f.append(i.y)
+                f.append(i.w)
+                f.append(i.h)
 
-        output = {0:[]}
-
-        for i in tracked:
-            f = []
-            f.append(i.x)
-            f.append(i.y)
-            f.append(i.w)
-            f.append(i.h)
-
-            output[0].append(f)
+                output[0].append(f)
+        else:
+            output = {0:[]}
 
         filename = files[0:len(files)-4]
         # print(filename)

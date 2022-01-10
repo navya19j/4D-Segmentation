@@ -1,0 +1,25 @@
+train:
+  run: True
+  train_data: Data
+  label_data: Labeled
+  cellname: cell02_APPL1_GFP
+  train_test_split: True
+  downsample: True
+  num_layers: 4
+  batch_size: 2
+  num_epochs: 20
+  checkpoint: checkpoint_train.pth.tar
+test:
+  run: False
+  test_data: Data
+  cellname: cell02_APPL1_GFP
+  downsample: True
+  num_layers: 4
+  checkpoint: checkpoint_train.pth.tar
+track: 
+  run: True
+  cellname: cell02_APPL1_GFP
+  min_area: 10
+  min_volume: 50
+  min_iou_threshold_2d: 10  # TODO: update with real value
+  min_iou_threshold_3d: 10  # TODO: update with real value

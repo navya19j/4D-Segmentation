@@ -2,7 +2,7 @@
 
 import ast
 import glob
-
+import os
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -63,15 +63,17 @@ def extract_as_dataframe(MAX_ITER=500):
 #### LOAD DATA
 
 st.sidebar.header("Data")
-filenames = glob.glob("./**/object.txt")
-fname = st.sidebar.text_input("Select an object file: ", filenames[0])
+filenames = glob.glob("./output/*/")
+CELL_NAME = st.sidebar.selectbox("Select a cell: ", filenames)
+fname = os.path.join(CELL_NAME, "predicted_mask", "object.txt")
+fname = st.sidebar.text_input("Select an object file: ", fname)
 
 # NOTE: can load all the items, but the plotting struggles with so many. we need to filter it before hand
 
 dictionary = load_data(fname)
 
 # MAX_ITEMS_TO_LOAD = st.number_input("Maximum items to load")
-df = extract_as_dataframe(MAX_ITER=len(dictionary))
+df = extract_as_dataframe(MAX_ITER=2000)#len(dictionary))
 
 st.sidebar.write(f"Loaded {len(dictionary)} tracked objects ({len(df)} data points).")
 
@@ -106,6 +108,54 @@ st.sidebar.subheader("Statistics")
 st.sidebar.write(
     f"Filtered to {len(uniq_ids)} individual tracks ({len(df_filter)} data points)."
 )
+
+
+############################################################################################################
+##### 2D IMAGE PLOTS
+
+# TODO: not working properly with large amount of tracks
+# st.markdown("""---""")
+# st.header("Images")
+
+# from viz_utils import *
+
+# img = load_img_as_np_array(os.path.join(CELL_NAME, "predicted_mask", "1.tif"))
+
+# st.write("SHAPE", img.shape)
+# T_MAX = 198
+# # Z_MAX = img.
+
+# # IMG_SHAPE = (600, 600, img.shape)
+# base_img = np.zeros(shape=img.shape)
+
+# idx = st.slider("Select slice", 0, base_img.shape[2], 0)
+
+
+# st.subheader("Slice Data")
+
+# img_bbox = draw_bounding_boxes(df_filter, base_img, idx)
+
+# animate_button = st.button("Animate Image")
+# progress_bar = st.empty()
+
+# animation_header = st.markdown(f"**Slice {idx}/{base_img.shape[2]}**")
+# img_cols  = st.columns(2)
+# df_placeholder = img_cols[0].dataframe(df_filter[df_filter["z"]==idx])
+# bbox_placeholder = img_cols[1].image(img_bbox, clamp=True, caption="Tracked Objects", width=500)
+
+# if animate_button:
+#     progress_bar.progress(0)
+#     for idx in range(base_img.shape[2]):
+#         df_img = df_filter[df_filter["z"] == idx]
+#         img_bbox = draw_bounding_boxes(df_filter, base_img, idx)
+
+#         animation_header.markdown(f"Slice: {idx}/{base_img.shape[2]}")
+#         df_placeholder.dataframe(df_filter[df_filter["z"]==idx])
+#         bbox_placeholder.image(img_bbox, clamp=True, caption=f"Slice : {idx}", width=500)
+#         time.sleep(0.5)
+
+#         progress_bar.progress((idx + 1) / base_img.shape[2])
+
 
 #### PLOTTING
 st.markdown("---")
@@ -214,147 +264,4 @@ dist_cols[1].plotly_chart(fig_cumulative_dist_per_avg_size, use_container_width=
 # save to csv
 df_distance.to_csv("data.csv")
 
-
-
 ############################################################################################################
-##### 2D IMAGE PLOTS
-
-# TODO: 2D plotting visualisation for bounding boxes
-# loop through the object
-# plot each box as rectangel in image, color is track id
-
-# TODO: i need to understand better how the image dimensions and time work? bit confused about if the image is xyz or xyt?
-# which dimeansions are what?
-
-st.markdown("""---""")
-st.header("Images")
-
-
-def draw_bounding_boxes(df, img_bbox, idx):
-    
-    df_img = df[df["z"] == idx]
-
-    im = Image.fromarray(img_bbox[:, :, idx])
-    im = im.convert("RGB")
-
-    draw = ImageDraw.Draw(im)
-
-    # https://stackoverflow.com/questions/16476924/how-to-iterate-over-rows-in-a-dataframe-in-pandas
-    disp_ids = []
-    for i in range(len(df_img)):
-        row = df_img.iloc[i]
-        id, t, x, y, z, w, h, d = row
-
-        col = colors[int(id) % len(colors)]
-        draw.rectangle((x, y, x+w, y+h), fill=col)
-
-        if id not in disp_ids:
-            draw.text((x, y-20), text=f"id: {id}", fill="white") 
-            disp_ids.append(id)
-
-    # TODO: double check how the boxes are defined? assume, x0, y0
-
-    img_bbox = np.array(im)
-    return img_bbox
-
-
-T_MAX = 198
-Z_MAX = 66
-
-IMG_SHAPE = (600, 600, Z_MAX)
-base_img = np.zeros(shape=IMG_SHAPE)
-
-idx = st.slider("Select slice", 0, base_img.shape[2], 0)
-
-colors = ["red", "blue", "green", "yellow", "purple", "pink", "orange", "gray"]
-# df_img["col"] = df["track_id"].astype(int).apply(colors[df["track_id"] % len(colors)]) # color
-st.subheader("Slice Data")
-
-img_bbox = draw_bounding_boxes(df_filter, base_img, idx)
-
-animate_button = st.button("Animate Image")
-progress_bar = st.empty()
-
-animation_header = st.markdown(f"**Slice {idx}/{base_img.shape[2]}**")
-img_cols  = st.columns(2)
-df_placeholder = img_cols[0].dataframe(df_filter[df_filter["z"]==idx])
-bbox_placeholder = img_cols[1].image(img_bbox, clamp=True, caption="Tracked Objects", width=500)
-
-if animate_button:
-    progress_bar.progress(0)
-    for idx in range(base_img.shape[2]):
-        df_img = df_filter[df_filter["z"] == idx]
-        img_bbox = draw_bounding_boxes(df_filter, base_img, idx)
-
-        animation_header.markdown(f"Slice: {idx}/{base_img.shape[2]}")
-        df_placeholder.dataframe(df_filter[df_filter["z"]==idx])
-        bbox_placeholder.image(img_bbox, clamp=True, caption=f"Slice : {idx}", width=500)
-        time.sleep(0.5)
-
-        progress_bar.progress((idx + 1) / base_img.shape[2])
-
-
-
-############################################################################################################
-
-######### VISUALISING RAW IMAGE, LABELS and PREDICTIONS
-st.markdown("""---""")
-st.header("Predicted Images")
-# TODO:
-# Set fixed limits for the axes
-# load images for raw, label, predicted
-# match up with image data
-
-@st.cache
-def load_img_as_np_array(path):
-    """Load a multidimensional tiff image as np array"""
-    img_array = []
-    
-    img = imread(path)
-    d = img.shape[0]
-
-    for i in range (0,d):
-        m_new = imread(path,key=i)
-        img_array.append(np.array(m_new, dtype=np.float32))
-
-    # normalise img
-    k = np.amax(img_array)
-    img_array = np.array(img_array)
-    img_array = (img_array)/float(k)
-    return img_array
-
-
-
-img_path = st.text_input("Select an image", "Data_Resized/APPL1/cell02_APPL1 GFP_T000 mask manual.tif")
-mask_path = st.text_input("Select a label mask", "Labeled_Resized/APPL1/cell02_APPL1 GFP_T000_mask.tif")
-pred_path = st.text_input("Select a prediction mask", "predicted_mask/1.tif")
-
-img_array = load_img_as_np_array(img_path)
-mask_array = load_img_as_np_array(mask_path)
-pred_array = load_img_as_np_array(pred_path)
-
-idx = st.slider("Select slice", 0, img_array.shape[2], 0)
-img_animation_button = st.button("Animate Images")
-img_header = st.markdown(f"Slice : {idx}")
-
-cols = st.columns(3)
-col_0 = cols[0].image(img_array[:, :, idx], clamp=True, caption="raw image", use_column_width=True)
-col_1 = cols[1].image(mask_array[:, :, idx], clamp=True, caption="label image", use_column_width=True)
-col_2 = cols[2].image(pred_array[:, :, idx], clamp=True, caption="predicted image", use_column_width=True)
-
-
-
-if img_animation_button:
-
-    for idx in range(img_array.shape[2]):
-        img_header.markdown(f"Slice : {idx}/{img_array.shape[2]}")
-        col_0.image(img_array[:, :, idx], clamp=True, caption="raw image", use_column_width=True)
-        col_1.image(mask_array[:, :, idx], clamp=True, caption="label image", use_column_width=True)
-        col_2.image(pred_array[:, :, idx], clamp=True, caption="predicted image", use_column_width=True)
-        time.sleep(0.5)
-
-
-# Theme:
-# [theme]
-# base="dark"
-# primaryColor="#33f6ec"

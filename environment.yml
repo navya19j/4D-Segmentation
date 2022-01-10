@@ -1,0 +1,22 @@
+name: 4d_segmentation
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python=3.7
+  - numpy
+  - scipy
+  - pytorch
+  - torchvision==0.7.0
+  - cudatoolkit=10.2
+  - opencv
+  - tqdm
+  - matplotlib
+  - tifffile
+  - plotly 
+  - scikit-image
+  - pytest
+  - mypy
+  - pip
+  - pip:
+    - streamlit

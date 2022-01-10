@@ -14,8 +14,9 @@ torch.set_printoptions(profile="full")
 #np.set_printoptions(threshold=np.inf)
 
 class Dataset_Test(torch.utils.data.Dataset):
-    def __init__(self,root,data,cellname):
+    def __init__(self,root,data,cellname,truth:bool):
         self.root = root
+        self.truth = truth
         # self.transforms = transforms
         self.data = data
         self.cellname = cellname
@@ -24,7 +25,7 @@ class Dataset_Test(torch.utils.data.Dataset):
     def __getitem__(self,idx):
            
         img_path = os.path.join(self.root,self.data,self.cellname, self.imgs[idx])
-        img = get_final(img_path,False)
+        img = get_final(img_path,False,self.truth)
     
         d = img.shape[0]
         img_array = []

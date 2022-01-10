@@ -1,44 +1,51 @@
-#increase dimension of training mask at 1
-import torch
-import torch.nn as nn
-from torch.nn.modules import loss
-import torch.optim as optim
-import torch.nn.functional as F
 import os
-from tqdm import tqdm
-import torch.optim as optimizer
-from unet import *
+
+import torch
+
+import threshold
 from dataset_test import *
+from unet import *
 from utils import *
 
-def main():
-    path = os.getcwd()
-    data = input("Enter name of directory containing Data: ")
-    cellname = input("Enter name of cell: ")
-    pred_mask = os.path.join(path,"predicted_mask")
-    if (not os.path.isdir(pred_mask)):
-        os.mkdir(pred_mask)
+# increase dimension of training mask at 1
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def main(config):
 
-    learning_rate = 1e-4
+    # load test config
+    ROOT = os.getcwd()
+    TEST_DATA = config["test_data"]
+    CELLNAME = config["cellname"]
+    TRUTH = config["truth"]
+    NUM_LAYERS = config["num_layers"]
+    CHECKPOINT_FILE = config["checkpoint"]
+
+    # data
+    pred_path = os.path.join(ROOT, "output", CELLNAME, "predicted_mask")
+    pred_mask = os.makedirs(
+        os.path.join(ROOT, "output", CELLNAME, "predicted_mask"), exist_ok=True
+    )
+
     # Test data must be organized in the format "Directory Name" > "Cellname" > All images to be tested.
-    test_loader = get_loaders_test(path,data,cellname)
-    model = UNet(in_channels=1,out_channels=1)
-    model.to(device)
-    loss_fn = nn.BCEWithLogitsLoss()
+    test_loader = get_loaders_test(ROOT, TEST_DATA, CELLNAME, TRUTH)
+    print(
+        f"Loaded {len(test_loader)} test images from {os.path.join(ROOT, TEST_DATA, CELLNAME)}."
+    )
 
-    checkpt = input("Enter name of the model tar file: ")
-    load_checkpoint_test(torch.load(checkpt, map_location=device),model)
-    print("Loaded")
-# =======
-#     load_checkpoint_test(torch.load("checkpoint_1.pth.tar", map_location=device),model)
-# >>>>>>> main
-    #check_accuracy(test_loader,model,"cuda",loss_fn)
-    one_img = (list(sorted(os.listdir(os.path.join(path,data,cellname)))))[0]
-    # print(len(test_loader))
-    img_path = os.path.join(path,data,cellname,one_img)
-    save_prediction_test(test_loader,model,path,device,img_path) 
+    # load model
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = UNet(NUM_LAYERS, in_channels=1, out_channels=1)
+    model.to(device)
+    load_checkpoint_test(torch.load(CHECKPOINT_FILE, map_location=device), model)
+    print(f"Loaded checkpoint: {CHECKPOINT_FILE} on {device} device.")
+
+    # output directory
+    one_img = (list(sorted(os.listdir(os.path.join(ROOT, TEST_DATA, CELLNAME)))))[0]
+    img_path = os.path.join(ROOT, TEST_DATA, CELLNAME, one_img)
+
+    # run testing
+    save_prediction_test(test_loader, model, pred_path, device, img_path, TRUTH)
+    threshold.run(pred_path)
+
 
 if __name__ == "__main__":
     main()

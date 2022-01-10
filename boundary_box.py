@@ -8,27 +8,28 @@ from tqdm import tqdm
 from tifffile import *
 from PIL import Image,ImageDraw
 
-
-
-def create_bound_box(predictions):
+def create_bound_box(predictions,min_area):
     path = os.path.join(os.getcwd(),predictions)
-    path_final = os.path.join(os.getcwd(),predictions ,"bounding_box")
+    path_final = os.path.join(os.getcwd(),predictions,"bounding_box")
     # all_ims = list(sorted(os.listdir(path)))
     files = (file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)))
     all_ims = list(sorted(files))  
-
+#     print(all_ims)
+#     print(path_final)
     img_arr = imread(os.path.join(path,all_ims[0]))
     # print(img_arr.shape)
     d = img_arr.shape[0]
 
+    print(f"Generating 2D Bounding Boxes for {len(all_ims)} images from {path}")
+    
     loop = tqdm(all_ims)
-    for i,img in enumerate(loop):
+    for idx,img in enumerate(loop):
     
         final_arr = []
         bounding_coord = {}
         
         for i in range (0,d):
-
+            loop.set_description(f"Image {idx+1}: Depth {i+1}/{d}")
             new_im = imread(os.path.join(path,img),key = i)
             new_im = np.array(new_im)
             w = new_im.shape[0]
@@ -42,18 +43,21 @@ def create_bound_box(predictions):
 
             contours = cv2.findContours(edged,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
             contours = contours[0] if len(contours) == 2 else contours[1]
+            # print(contours)
             for cntr in contours:
                 x,y,w,h = cv2.boundingRect(cntr)
                 cent = ((x+w)/2,(y+h)/2)
                 to_find = i+1
-                if (to_find in bounding_coord):
-                    new = []
-                    for ind in bounding_coord[i+1]:
-                        new.append(ind)
-                    new.append([x,y,w,h])
-                    bounding_coord[i+1] = new
-                else:
-                    bounding_coord[i+1] = [[x,y,w,h]]
+                # print(w*h)
+                if (w*h>=int(min_area)):
+                    if (to_find in bounding_coord):
+                        new = []
+                        for ind in bounding_coord[i+1]:
+                            new.append(ind)
+                        new.append([x,y,w,h])
+                        bounding_coord[i+1] = new
+                    else:
+                        bounding_coord[i+1] = [[x,y,w,h]]
                 # cv2.rectangle(res,(x,y),(x+w,y+h),(0,255,0),1)
             final_arr.append(res)
 
