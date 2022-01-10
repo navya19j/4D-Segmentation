@@ -8,10 +8,18 @@ from tqdm import tqdm
 from helpers import *
 from scipy.optimize import linear_sum_assignment as linear_assignment
 
-
-# print(dictionary)
-
 def run(predictions,iou_threshold):
+
+    """
+        This function returns the maximum sized (area) bounding box of some object. 
+        Two boxes are said to be enclosing the same object by the "iou_threshold" measure
+        Filters out unwanted/multiple boxes.
+
+        args:
+            predictions : Folder Name containing the predicted images
+            iou_threshold : Minimum IOU threshold
+
+    """
     start_directory = os.path.join(os.getcwd(),predictions,"bounding_box")
     final_directory = os.path.join(os.getcwd(),predictions,"complete_bounding_box")
     
@@ -51,7 +59,6 @@ def run(predictions,iou_threshold):
             output = {0:[]}
 
         filename = files[0:len(files)-4]
-        # print(filename)
         sample = open(os.path.join(final_directory, filename+"_bb1.txt"),"w")
         print(output,file=sample)
 
@@ -66,7 +73,6 @@ def assign_detection_to_tracker(trackers,detections,iou_threshold,final):
             iou_matrix[d,t] = IOU(det,trk)
 
     matched_indices = linear_assignment(-iou_matrix)
-    # print(matched_indices)
 
     for d,det in enumerate(detections):
         if d not in matched_indices[0][:]:
@@ -79,7 +85,7 @@ def assign_detection_to_tracker(trackers,detections,iou_threshold,final):
     for i in range (0, len(matched_indices[0])):
         tracked = trackers[matched_indices[1][i]]
         detected = detections[matched_indices[0][i]]
-        if iou_matrix[matched_indices[0][i],matched_indices[1]][i] >= iou_threshold:
+        if iou_matrix[matched_indices[0][i],matched_indices[1][i]] >= iou_threshold:
             if (tracked.area()>detected.area()):
                 final.append(tracked)
 
@@ -102,9 +108,8 @@ def conv_dict_to_class(dictionary):
             h_1 = dictionary[i][j][3]
 
             dictionary[i][j] = Box(x_1,y_1,w_1,h_1)
-        #print(dictionary[i])
     return dictionary
 
 if __name__ == "__main__":
-    # predictions = input("Enter directory containing masks to be tracked: ")
+
     run(sys.argv[2])

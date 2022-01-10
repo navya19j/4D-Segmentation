@@ -14,6 +14,21 @@ torch.set_printoptions(profile="full")
 #np.set_printoptions(threshold=np.inf)
 
 class Dataset_Test(torch.utils.data.Dataset):
+
+    """"
+        Class for the Test Dataset
+
+        Test Dataset is structured as follows :
+        
+        root --> data --> cellname --> all image files
+
+        args:
+            root : Root Directory
+            data : Directory with different folders to images to be tested
+            cellname : Name of the Directory containing test images
+            truth : True if input image is to be reduced in size, otw False
+    """
+
     def __init__(self,root,data,cellname,truth:bool):
         self.root = root
         self.truth = truth
@@ -43,4 +58,7 @@ class Dataset_Test(torch.utils.data.Dataset):
         return img_array
 
     def __len__(self):
+        """
+            Number of images in the loader
+        """
         return len(self.imgs)

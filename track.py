@@ -15,6 +15,12 @@ from scipy.optimize import linear_sum_assignment as linear_assignment
 
 def conv_dict_to_class(dictionary):
 
+    """
+        Create a Box object from dictionary
+
+        args:
+            dictionary: given dictionary
+    """
     
     for j in range (0,len(dictionary[0])):
         x_1 = dictionary[0][j][0]
@@ -29,6 +35,17 @@ def conv_dict_to_class(dictionary):
     return dictionary[0]
 
 def draw_box(img0,current,color,object_id,iter):
+
+    """
+        Helper function to visualize bounding boxes
+
+        args:
+            img0 : Image File
+            current : Box Object
+            color : color of bounding box
+            object_id : ID of the object detected
+            iter : File number (in case of endosome data : time stamp)
+    """
 
     x = current.x
     y = current.y
@@ -57,19 +74,20 @@ def conv_box_to_list(box1):
 
 def get_img_path(idx,path):
 
-    # if (int(idx/10)==0):
-    #         idx_new = "00" + str(idx)
-    # elif (int(idx/100) == 0):
-    #     idx_new = "0" + str(idx)
-    # else:
-    #     idx_new =  str(idx)
-
     img_id = os.path.join(path,idx)
 
     return img_id
 
     
 def run(predicitons,iou_threshold):
+
+    """
+        Tracks the 3D bounding boxes detected across time.
+
+        args:
+            predictions : Folder containing predicted images
+            iou_threshold : Minimum IOU threshold
+    """
 
     start_directory_1 = os.path.join(os.getcwd(),predicitons,"3D_Box")
     all_box = []

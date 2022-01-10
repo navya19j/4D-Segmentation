@@ -24,12 +24,19 @@ def get_filter(image,mask):
 
 def run(predictions):
 
+    """
+        Thresholds the predicted segmented masks
+
+        args:
+            predictions: path to the folder containing predicted images
+    """
+
     path = os.path.join(os.getcwd(),predictions)
     files = (file for file in os.listdir(path) if os.path.isfile(os.path.join(path, file)))
     all_ims = list(sorted(files))  
     print(f"Thresholding Segmentation Masks for {len(all_ims)} images from {path}")
     img_arr = Image.open(os.path.join(path,all_ims[0]))
-    # print(img_arr.shape)
+
     d = img_arr.n_frames
     del img_arr
     loop = tqdm(all_ims)
@@ -50,10 +57,6 @@ def run(predictions):
                 res = get_filter(new_im,img_otsu)
             else:
                 res = new_im
-            
-#             thresh = threshold_otsu(new_im)
-#             img_otsu = new_im > thresh
-#             res = get_filter(new_im,img_otsu)
 
             final_arr.append(res)
 
@@ -61,7 +64,7 @@ def run(predictions):
         final_arr = final_arr.astype("float32")
 
         
-        imsave(path+"/"+img,final_arr)
+        imsave(os.path.join(path,img),final_arr)
         del final_arr
 
 if __name__ == '__main__':
